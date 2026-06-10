@@ -53,7 +53,7 @@ Rename your most important workflows to include the tag (e.g. `Invoice Sync [cri
 
 If you want native push notifications without running a Slack workspace or Telegram bot:
 
-1. Install **Workflow Buddy** from the App Store ([amelus.de](https://www.amelus.de)).
+1. Install [**Workflow Buddy**](https://apps.apple.com/app/id6760253861) from the App Store.
 2. In the app, open **Settings → Push API** and copy your key.
 3. In n8n, create a **Header Auth** credential — Name: `Authorization`, Value: `Bearer wb_…` (your key).
 4. Select the credential in the **Alert: WorkflowBuddy (iOS Push)** node and enable the node.

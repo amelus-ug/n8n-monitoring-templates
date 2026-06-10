@@ -2,7 +2,7 @@
 
 Production-ready n8n workflow templates for **error handling, monitoring, and alerting**. Import, configure your channels, done.
 
-Every template works standalone with the notification channel of your choice — Slack, Telegram, Email, or native iOS push via [WorkflowBuddy](https://www.amelus.de).
+Every template works standalone with the notification channel of your choice — Slack, Telegram, Email, or native iOS push via [Workflow Buddy](https://apps.apple.com/app/id6760253861).
 
 ## Templates
 
@@ -27,7 +27,7 @@ Each template ships with multiple alert options — enable the one you use:
 - **Slack** (enabled by default)
 - **Telegram**
 - **Email (SMTP)**
-- **WorkflowBuddy** — native iOS push notifications for n8n, no extra infrastructure ([App Store](https://www.amelus.de))
+- **WorkflowBuddy** — native iOS push notifications for n8n, no extra infrastructure ([App Store](https://apps.apple.com/app/id6760253861))
 
 ## About
 
