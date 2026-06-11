@@ -9,10 +9,10 @@ Every template works standalone with the notification channel of your choice —
 | # | Template | What it does | Status |
 |---|----------|--------------|--------|
 | 1 | [Global Error Handler](01-global-error-handler/) | Catch failures from all workflows, log them, escalate critical ones instantly | ✅ Ready |
-| 2 | Self-Healing Workflow | Auto-retry failed executions via the n8n API, alert when retries are exhausted | 🔜 Planned |
-| 3 | Health Check / Heartbeat Monitor | Detect silently dead workflows and unreachable instances on a schedule | 🔜 Planned |
-| 4 | AI Error Digest | Summarize the last 24h of errors with an LLM into one daily message | 🔜 Planned |
-| 5 | Long-Running Job Notifier | Push notifications on start/progress/completion of long jobs | 🔜 Planned |
+| 2 | [Self-Healing Workflow](02-self-healing-workflow/) | Auto-retry failed executions via the n8n API, alert when retries are exhausted | ✅ Ready |
+| 3 | [Health Check / Heartbeat Monitor](03-health-check-monitor/) | Detect silently dead workflows that stopped running, on a schedule | ✅ Ready |
+| 4 | [AI Error Digest](04-ai-error-digest/) | Summarize the last 24h of errors with an LLM into one daily message | ✅ Ready |
+| 5 | [Long-Running Job Notifier](05-long-running-job-notifier/) | Push notifications on start and completion of long jobs, with duration | ✅ Ready |
 
 ## Quick start
 

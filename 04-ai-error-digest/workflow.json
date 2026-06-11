@@ -1,0 +1,342 @@
+{
+  "name": "AI Error Digest – Daily Failure Summary",
+  "nodes": [
+    {
+      "id": "sticky-overview",
+      "name": "Sticky Note – Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-1100, -60],
+      "parameters": {
+        "width": 460,
+        "height": 620,
+        "content": "## 🤖 AI Error Digest\n\nInstead of a push for every single failure, get **one** calm, readable summary once a day: what failed, how often, and what to look at first — written by an LLM.\n\n**How it works:**\n1. Runs once a day (default 08:00).\n2. Pulls the last 24 h of `error` executions from the n8n API.\n3. Aggregates them by workflow.\n4. An LLM turns the raw counts into a prioritized, plain-language digest.\n5. Delivers it as a single message on your channel of choice.\n\n**Setup:**\n1. Set `N8N_BASE_URL` and `LOOKBACK_HOURS` in the **Config** node.\n2. Add an **n8n API key** as a *Header Auth* credential (Name `X-N8N-API-KEY`) on the HTTP Request node.\n3. Add your LLM credential to the **Chat Model** node (OpenAI by default — swap for Anthropic, Google, Ollama, etc.).\n4. Pick a delivery channel on the right.\n5. **Activate** the workflow.\n\n*No failures in the window → a short \"all clear\" branch runs instead (disabled by default).*"
+      }
+    },
+    {
+      "id": "sticky-model",
+      "name": "Sticky Note – Model",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [200, 280],
+      "parameters": {
+        "width": 300,
+        "height": 200,
+        "content": "## 🧠 Swap the model freely\n\nThe **Chat Model** sub-node is OpenAI by default. Replace it with any chat model node (Anthropic, Google Gemini, Ollama, Groq…) — just connect the new model to the *Summarize Errors* chain. The prompt stays the same."
+      }
+    },
+    {
+      "id": "sticky-delivery",
+      "name": "Sticky Note – Delivery Channels",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [900, -280],
+      "parameters": {
+        "width": 400,
+        "height": 240,
+        "content": "## 📣 Daily digest — pick your channel(s)\n\n**Slack** is enabled by default. To use another channel, enable it and disable Slack:\n\n- **Telegram** — set your chat ID\n- **Email** — set from/to addresses\n- **WorkflowBuddy** — native iOS push, see the note below ⬇️"
+      }
+    },
+    {
+      "id": "sticky-workflowbuddy",
+      "name": "Sticky Note – WorkflowBuddy",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [900, 340],
+      "parameters": {
+        "width": 420,
+        "height": 360,
+        "color": 4,
+        "content": "## 📱 WorkflowBuddy (iOS push)\n\nGet the daily digest as a native push notification on your iPhone — no Slack or Telegram needed.\n\n1. Install [**Workflow Buddy**](https://apps.apple.com/app/id6760253861) from the App Store.\n2. In the app, open **Settings → Push API** and copy your key.\n3. In n8n, create a **Header Auth** credential:\n   - Name: `Authorization`\n   - Value: `Bearer wb_…` (your key)\n4. Select the credential in this node and enable it.\n\n*Free tier currently includes 50 pushes/day. The digest is one message; keep it concise (≤1000 chars).*"
+      }
+    },
+    {
+      "id": "node-schedule",
+      "name": "Every Day at 08:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-580, -60],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "daysInterval": 1,
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "node-config",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-360, -60],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "N8N_BASE_URL",
+              "value": "https://n8n.example.com",
+              "type": "string"
+            },
+            {
+              "id": "a2",
+              "name": "LOOKBACK_HOURS",
+              "value": 24,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "node-list-errors",
+      "name": "List Failed Executions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-140, -60],
+      "parameters": {
+        "url": "={{ $json.N8N_BASE_URL }}/api/v1/executions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "error"
+            },
+            {
+              "name": "limit",
+              "value": "100"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "node-aggregate",
+      "name": "Aggregate Errors",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [120, -60],
+      "parameters": {
+        "jsCode": "// Group the last LOOKBACK_HOURS of error executions by workflow.\nconst cfg = $('Config').first().json;\nconst lookbackHours = cfg.LOOKBACK_HOURS ?? 24;\nconst cutoff = Date.now() - lookbackHours * 3_600_000;\n\nconst body = $input.first().json;\nconst execs = (body.data || []).filter((e) => {\n  const t = new Date(e.startedAt || e.stoppedAt || 0).getTime();\n  return t >= cutoff;\n});\n\nconst groups = {};\nfor (const e of execs) {\n  const name = e.workflowData?.name ?? `workflow ${e.workflowId ?? '?'}`;\n  groups[name] = (groups[name] ?? 0) + 1;\n}\n\nconst total = execs.length;\nconst lines = Object.entries(groups)\n  .sort((a, b) => b[1] - a[1])\n  .map(([name, count]) => `- ${name}: ${count} failure(s)`);\n\nconst errorReport =\n  total === 0\n    ? `No failed executions in the last ${lookbackHours}h.`\n    : `Total failed executions in the last ${lookbackHours}h: ${total}\\nBy workflow (most failures first):\\n${lines.join('\\n')}`;\n\nreturn [{ json: { hasErrors: total > 0, total, lookbackHours, errorReport } }];"
+      }
+    },
+    {
+      "id": "node-if-errors",
+      "name": "Any Errors?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [380, -60],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.hasErrors }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "node-chat-model",
+      "name": "Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [420, 160],
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "node-summarize",
+      "name": "Summarize Errors",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [620, -60],
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an SRE assistant. Write a short daily error digest for an n8n operator based on the data below. Be concise (max ~600 characters), plain language, no markdown headers. Lead with the single most important thing to check first, then list the rest briefly. If counts are high, say so plainly.\n\nData:\n{{ $json.errorReport }}",
+        "messages": {
+          "messageValues": []
+        }
+      }
+    },
+    {
+      "id": "node-format",
+      "name": "Build Digest Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [880, -60],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f1",
+              "name": "digest",
+              "value": "={{ $json.text.slice(0, 1000) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "node-alert-slack",
+      "name": "Send: Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [1180, -180],
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "#alerts"
+        },
+        "text": "=📋 *Daily n8n error digest*\n{{ $json.digest }}",
+        "otherOptions": {}
+      }
+    },
+    {
+      "id": "node-alert-telegram",
+      "name": "Send: Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1180, 0],
+      "disabled": true,
+      "parameters": {
+        "chatId": "YOUR_CHAT_ID",
+        "text": "=📋 Daily n8n error digest\n{{ $json.digest }}",
+        "additionalFields": {}
+      }
+    },
+    {
+      "id": "node-alert-email",
+      "name": "Send: Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1180, 180],
+      "disabled": true,
+      "parameters": {
+        "fromEmail": "alerts@example.com",
+        "toEmail": "you@example.com",
+        "subject": "📋 Daily n8n error digest",
+        "emailFormat": "text",
+        "text": "={{ $json.digest }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-alert-workflowbuddy",
+      "name": "Send: WorkflowBuddy (iOS Push)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1180, 360],
+      "disabled": true,
+      "parameters": {
+        "method": "POST",
+        "url": "https://companion.amelus.de/api/notify",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "📋 Daily n8n error digest"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.digest }}"
+            },
+            {
+              "name": "severity",
+              "value": "info"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "node-all-clear",
+      "name": "All Clear (No Errors)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [620, 420],
+      "parameters": {}
+    }
+  ],
+  "connections": {
+    "Every Day at 08:00": {
+      "main": [[{ "node": "Config", "type": "main", "index": 0 }]]
+    },
+    "Config": {
+      "main": [[{ "node": "List Failed Executions", "type": "main", "index": 0 }]]
+    },
+    "List Failed Executions": {
+      "main": [[{ "node": "Aggregate Errors", "type": "main", "index": 0 }]]
+    },
+    "Aggregate Errors": {
+      "main": [[{ "node": "Any Errors?", "type": "main", "index": 0 }]]
+    },
+    "Any Errors?": {
+      "main": [
+        [{ "node": "Summarize Errors", "type": "main", "index": 0 }],
+        [{ "node": "All Clear (No Errors)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Chat Model": {
+      "ai_languageModel": [[{ "node": "Summarize Errors", "type": "ai_languageModel", "index": 0 }]]
+    },
+    "Summarize Errors": {
+      "main": [[{ "node": "Build Digest Message", "type": "main", "index": 0 }]]
+    },
+    "Build Digest Message": {
+      "main": [
+        [
+          { "node": "Send: Slack", "type": "main", "index": 0 },
+          { "node": "Send: Telegram", "type": "main", "index": 0 },
+          { "node": "Send: Email", "type": "main", "index": 0 },
+          { "node": "Send: WorkflowBuddy (iOS Push)", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

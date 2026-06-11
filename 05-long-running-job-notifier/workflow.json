@@ -1,0 +1,266 @@
+{
+  "name": "Long-Running Job Notifier – Start & Completion Push",
+  "nodes": [
+    {
+      "id": "sticky-overview",
+      "name": "Sticky Note – Overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-1080, -80],
+      "parameters": {
+        "width": 460,
+        "height": 600,
+        "content": "## ⏱️ Long-Running Job Notifier\n\nWrap any slow workflow (big export, batch import, video render, nightly ETL) so you get a push when it **starts** and another when it **finishes** — with the total duration. No more babysitting a tab.\n\n**The pattern:**\n```\nTrigger → Mark Start → [notify \"started\"]\n                    → ▶ your long job\n                    → Mark Done → [notify \"finished in 12m\"]\n```\nNotifications are side branches, so your job runs whether or not a channel is enabled.\n\n**Setup:**\n1. Replace the **▶ Your Long Job Here** node with your actual work (or call this as a sub-workflow around it).\n2. Set the job name in the **Mark Start** node.\n3. Enable + configure your notification channel(s).\n4. Run it (Manual Trigger is here for testing — swap for your real trigger)."
+      }
+    },
+    {
+      "id": "sticky-job",
+      "name": "Sticky Note – Your Job",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-300, 300],
+      "parameters": {
+        "width": 300,
+        "height": 180,
+        "content": "## ▶ Replace this node\n\nThe **Wait** node simulates a slow job so you can see a real duration on the first test run. Delete it and put your actual workflow steps here — the timing and notifications keep working unchanged."
+      }
+    },
+    {
+      "id": "sticky-start",
+      "name": "Sticky Note – Start Notify",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-40, -420],
+      "parameters": {
+        "width": 320,
+        "height": 200,
+        "content": "## 🚀 \"Started\" notification\n\nFires the moment the job begins. **Slack** enabled by default; **WorkflowBuddy** push ready below (enable it).\n\nWant Telegram/Email too? Copy a node from the *Finished* group and wire it to **Mark Start**."
+      }
+    },
+    {
+      "id": "sticky-done",
+      "name": "Sticky Note – Done Notify",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [620, -480],
+      "parameters": {
+        "width": 400,
+        "height": 240,
+        "content": "## ✅ \"Finished\" notification — pick your channel(s)\n\nFires when the job completes, with the total duration.\n\n**Slack** is enabled by default. To use another channel, enable it and disable Slack:\n- **Telegram** — set your chat ID\n- **Email** — set from/to addresses\n- **WorkflowBuddy** — native iOS push, see the note below ⬇️"
+      }
+    },
+    {
+      "id": "sticky-workflowbuddy",
+      "name": "Sticky Note – WorkflowBuddy",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [620, 360],
+      "parameters": {
+        "width": 420,
+        "height": 360,
+        "color": 4,
+        "content": "## 📱 WorkflowBuddy (iOS push)\n\nGet start/finish pings as native push notifications on your iPhone — no Slack or Telegram needed.\n\n1. Install [**Workflow Buddy**](https://apps.apple.com/app/id6760253861) from the App Store.\n2. In the app, open **Settings → Push API** and copy your key.\n3. In n8n, create a **Header Auth** credential:\n   - Name: `Authorization`\n   - Value: `Bearer wb_…` (your key)\n4. Select the credential in the WorkflowBuddy node(s) and enable them.\n\n*Free tier currently includes 50 pushes/day. Tapping the notification opens the app.*"
+      }
+    },
+    {
+      "id": "node-trigger",
+      "name": "When clicking ‘Test’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [-560, -80],
+      "parameters": {}
+    },
+    {
+      "id": "node-mark-start",
+      "name": "Mark Start",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-340, -80],
+      "parameters": {
+        "jsCode": "// Capture the job name and start time. Edit JOB_NAME to suit.\nconst JOB_NAME = 'Nightly Export';\n\nreturn [\n  {\n    json: {\n      jobName: JOB_NAME,\n      startMs: Date.now(),\n      startedAt: new Date().toISOString(),\n    },\n  },\n];"
+      }
+    },
+    {
+      "id": "node-long-job",
+      "name": "▶ Your Long Job Here",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [-100, -80],
+      "parameters": {
+        "amount": 5,
+        "unit": "seconds"
+      }
+    },
+    {
+      "id": "node-mark-done",
+      "name": "Mark Done",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [180, -80],
+      "parameters": {
+        "jsCode": "// Compute how long the job took.\nconst start = $('Mark Start').first().json;\nconst elapsedMs = Date.now() - start.startMs;\nconst mins = Math.floor(elapsedMs / 60000);\nconst secs = Math.round((elapsedMs % 60000) / 1000);\nconst durationText = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;\n\nreturn [\n  {\n    json: {\n      jobName: start.jobName,\n      durationText,\n      elapsedMs,\n      finishedAt: new Date().toISOString(),\n    },\n  },\n];"
+      }
+    },
+    {
+      "id": "node-start-slack",
+      "name": "Start: Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [-100, -340],
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "#jobs"
+        },
+        "text": "=🚀 Started: {{ $('Mark Start').first().json.jobName }}",
+        "otherOptions": {}
+      }
+    },
+    {
+      "id": "node-start-workflowbuddy",
+      "name": "Start: WorkflowBuddy (iOS Push)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-100, -540],
+      "disabled": true,
+      "parameters": {
+        "method": "POST",
+        "url": "https://companion.amelus.de/api/notify",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "=🚀 Job started"
+            },
+            {
+              "name": "message",
+              "value": "={{ $('Mark Start').first().json.jobName }} is now running."
+            },
+            {
+              "name": "severity",
+              "value": "info"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "node-done-slack",
+      "name": "Done: Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [620, -180],
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "#jobs"
+        },
+        "text": "=✅ Finished: {{ $json.jobName }} in {{ $json.durationText }}",
+        "otherOptions": {}
+      }
+    },
+    {
+      "id": "node-done-telegram",
+      "name": "Done: Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [620, 20],
+      "disabled": true,
+      "parameters": {
+        "chatId": "YOUR_CHAT_ID",
+        "text": "=✅ Finished: {{ $json.jobName }} in {{ $json.durationText }}",
+        "additionalFields": {}
+      }
+    },
+    {
+      "id": "node-done-email",
+      "name": "Done: Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [620, 160],
+      "disabled": true,
+      "parameters": {
+        "fromEmail": "alerts@example.com",
+        "toEmail": "you@example.com",
+        "subject": "=✅ Finished: {{ $json.jobName }}",
+        "emailFormat": "text",
+        "text": "={{ $json.jobName }} finished in {{ $json.durationText }}.",
+        "options": {}
+      }
+    },
+    {
+      "id": "node-done-workflowbuddy",
+      "name": "Done: WorkflowBuddy (iOS Push)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [620, 300],
+      "disabled": true,
+      "parameters": {
+        "method": "POST",
+        "url": "https://companion.amelus.de/api/notify",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "=✅ Job finished"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.jobName }} finished in {{ $json.durationText }}."
+            },
+            {
+              "name": "severity",
+              "value": "info"
+            }
+          ]
+        },
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Test’": {
+      "main": [[{ "node": "Mark Start", "type": "main", "index": 0 }]]
+    },
+    "Mark Start": {
+      "main": [
+        [
+          { "node": "▶ Your Long Job Here", "type": "main", "index": 0 },
+          { "node": "Start: Slack", "type": "main", "index": 0 },
+          { "node": "Start: WorkflowBuddy (iOS Push)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "▶ Your Long Job Here": {
+      "main": [[{ "node": "Mark Done", "type": "main", "index": 0 }]]
+    },
+    "Mark Done": {
+      "main": [
+        [
+          { "node": "Done: Slack", "type": "main", "index": 0 },
+          { "node": "Done: Telegram", "type": "main", "index": 0 },
+          { "node": "Done: Email", "type": "main", "index": 0 },
+          { "node": "Done: WorkflowBuddy (iOS Push)", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}
