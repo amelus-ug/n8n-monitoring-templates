@@ -6,68 +6,73 @@
       "name": "Sticky Note – Overview",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [-1040, -40],
+      "position": [
+        -1040,
+        -160
+      ],
       "parameters": {
         "width": 460,
         "height": 640,
-        "content": "## 🔁 Self-Healing Workflow\n\nAutomatically retries failed executions across your whole n8n instance, and only alerts you when retries are exhausted — so transient glitches (rate limits, brief outages) heal themselves silently.\n\n**How it works:**\n1. Runs on a schedule (default every 15 min).\n2. Lists recent `error` executions via the n8n API.\n3. Retries each one up to `MAX_RETRIES` times, tracking attempts in the workflow's static data.\n4. When a job still fails after the last attempt, it gives up and sends one alert.\n\n**Setup:**\n1. Set `N8N_BASE_URL` in the **Config** node (no trailing slash).\n2. Create an **n8n API key** (Settings → n8n API) and add it as a *Header Auth* credential — Name `X-N8N-API-KEY`, Value = your key — on the three HTTP Request nodes.\n3. Pick an alert channel on the right.\n4. **Activate** the workflow (static-data retry tracking only persists in active/production runs, not manual test runs).\n\n⚠️ Retrying re-runs the workflow with the data captured at failure time. Make sure your workflows are safe to re-run (idempotent) — e.g. avoid sending the same email twice."
+        "content": "## 🔁 Self-Healing Workflow\n\nAutomatically retries failed executions across your whole n8n instance, and alerts you only once the retries are exhausted — so transient glitches (rate limits, brief outages) heal themselves silently.\n\n### How it works\n1. Runs on a schedule (default every 15 min).\n2. Lists recent `error` executions via the n8n API.\n3. Retries each one up to `MAX_RETRIES` times, tracking attempts in the workflow's static data.\n4. When a job still fails after the last attempt, it gives up and sends one alert.\n\n### Setup\n1. Set `N8N_BASE_URL` in the **Config** node (no trailing slash).\n2. Create an n8n API key (**Settings → n8n API**) and add it as a *Header Auth* credential — Name `X-N8N-API-KEY` — on the three HTTP Request nodes.\n3. Enable one alert channel: Slack (default), Telegram, Email or WorkflowBuddy.\n4. **Activate** the workflow — static-data retry tracking only persists in production runs, not in manual tests.\n\n### Customization tips\nTune `MAX_RETRIES` and `LOOKBACK_LIMIT` in **Config**. A retry re-runs the workflow with the data captured at failure time, so make sure your workflows are safe to re-run — avoid sending the same email twice."
       }
     },
     {
-      "id": "sticky-config",
-      "name": "Sticky Note – Config",
+      "parameters": {
+        "content": "## ⚙️ Scan and decide\n\nOn a schedule, list recent failed executions and work out per execution whether to retry, give up, or skip it.",
+        "height": 255,
+        "width": 1290,
+        "color": 7
+      },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [-540, 200],
-      "parameters": {
-        "width": 280,
-        "height": 200,
-        "content": "## ⚙️ Config\n\n- `N8N_BASE_URL` — your instance URL, e.g. `https://n8n.example.com` (no trailing slash).\n- `MAX_RETRIES` — how many times to retry before giving up (default 3).\n- `LOOKBACK_LIMIT` — how many recent error executions to scan each run (default 100)."
-      }
+      "position": [
+        -545,
+        -150
+      ],
+      "id": "sticky-section-1-02",
+      "name": "Sticky Note – ⚙️ Scan and decide"
     },
     {
-      "id": "sticky-decide",
-      "name": "Sticky Note – Retry Logic",
+      "parameters": {
+        "content": "## 🔁 Retry path\n\nRe-runs the execution and records the new attempt, so the count carries forward.",
+        "height": 255,
+        "width": 510,
+        "color": 7
+      },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [180, 200],
-      "parameters": {
-        "width": 320,
-        "height": 220,
-        "content": "## 🧠 Retry bookkeeping\n\nThe **Decide Actions** node tracks attempts per execution in `staticData`. Each retry creates a *new* execution; its attempt count is carried forward from the one it replaced.\n\n- attempts `< MAX_RETRIES` → **retry**\n- attempts `≥ MAX_RETRIES` → **give up + alert**\n- already handled → **skip**"
-      }
+      "position": [
+        775,
+        -270
+      ],
+      "id": "sticky-section-2-02",
+      "name": "Sticky Note – 🔁 Retry path"
     },
     {
-      "id": "sticky-alerts",
-      "name": "Sticky Note – Alert Channels",
+      "parameters": {
+        "content": "## 📣 \"Gave up\" alert — pick your channel\n\nFires only once retries are exhausted. Slack is enabled by default; enable another node and disable Slack.\n\n**WorkflowBuddy** delivers them as native iOS push: install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, then add it as a Header Auth credential `Authorization` / `Bearer wb_…`.",
+        "height": 855,
+        "width": 250,
+        "color": 7
+      },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [1280, -260],
-      "parameters": {
-        "width": 400,
-        "height": 240,
-        "content": "## 📣 \"Gave up\" alert — pick your channel(s)\n\n**Slack** is enabled by default. To use another channel, enable it and disable Slack:\n\n- **Telegram** — set your chat ID\n- **Email** — set from/to addresses\n- **WorkflowBuddy** — native iOS push, see the note below ⬇️"
-      }
-    },
-    {
-      "id": "sticky-workflowbuddy",
-      "name": "Sticky Note – WorkflowBuddy",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [1280, 360],
-      "parameters": {
-        "width": 420,
-        "height": 360,
-        "color": 4,
-        "content": "## 📱 WorkflowBuddy (iOS push)\n\nGet \"self-healing gave up\" alerts as native push notifications on your iPhone — no Slack or Telegram needed.\n\n1. Install [**Workflow Buddy**](https://apps.apple.com/app/id6760253861) from the App Store.\n2. In the app, open **Settings → Push API** and copy your key.\n3. In n8n, create a **Header Auth** credential:\n   - Name: `Authorization`\n   - Value: `Bearer wb_…` (your key)\n4. Select the credential in this node and enable it.\n\n*Free tier currently includes 50 pushes/day. Tapping the notification opens the app.*"
-      }
+      "position": [
+        775,
+        10
+      ],
+      "id": "sticky-section-3-02",
+      "name": "Sticky Note – 📣 \"Gave up\" alert — pick your channel"
     },
     {
       "id": "node-schedule",
       "name": "Every 15 Minutes",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
-      "position": [-520, -40],
+      "position": [
+        -520,
+        -40
+      ],
       "parameters": {
         "rule": {
           "interval": [
@@ -84,7 +89,10 @@
       "name": "Config",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
-      "position": [-300, -40],
+      "position": [
+        -300,
+        -40
+      ],
       "parameters": {
         "assignments": {
           "assignments": [
@@ -116,7 +124,10 @@
       "name": "List Failed Executions",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [-80, -40],
+      "position": [
+        -80,
+        -40
+      ],
       "parameters": {
         "url": "={{ $json.N8N_BASE_URL }}/api/v1/executions",
         "authentication": "genericCredentialType",
@@ -142,7 +153,10 @@
       "name": "Decide Actions",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [220, -40],
+      "position": [
+        220,
+        -40
+      ],
       "parameters": {
         "jsCode": "// Reads recent error executions and decides per execution:\n//   'retry'  -> attempts left\n//   'giveup' -> exhausted, alert once\n// Attempt counts are tracked in workflow static data and chained across retries.\n\nconst cfg = $('Config').first().json;\nconst MAX_RETRIES = cfg.MAX_RETRIES ?? 3;\n\nconst body = $input.first().json;\nconst executions = Array.isArray(body.data) ? body.data : [];\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.attempts) staticData.attempts = {}; // execId -> number\nif (!staticData.done) staticData.done = {};         // execId -> true\n\nconst out = [];\n\nfor (const exec of executions) {\n  const execId = String(exec.id);\n\n  // Already fully handled (retried or given up) -> skip\n  if (staticData.done[execId]) continue;\n\n  const attempts = staticData.attempts[execId] ?? 0;\n  const workflowId = exec.workflowId ?? exec.workflowData?.id ?? '';\n  const workflowName = exec.workflowData?.name ?? 'Unknown workflow';\n\n  if (attempts < MAX_RETRIES) {\n    // Mark this execution as handled so we don't pick it again next run.\n    staticData.done[execId] = true;\n    out.push({\n      json: { action: 'retry', executionId: execId, workflowId, workflowName, attempts },\n    });\n  } else {\n    staticData.done[execId] = true;\n    out.push({\n      json: { action: 'giveup', executionId: execId, workflowId, workflowName, attempts },\n    });\n  }\n}\n\nreturn out;"
       }
@@ -152,7 +166,10 @@
       "name": "Retry?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [520, -40],
+      "position": [
+        520,
+        -40
+      ],
       "parameters": {
         "conditions": {
           "options": {
@@ -181,7 +198,10 @@
       "name": "Retry Execution",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [800, -160],
+      "position": [
+        800,
+        -160
+      ],
       "parameters": {
         "method": "POST",
         "url": "={{ $('Config').first().json.N8N_BASE_URL }}/api/v1/executions/{{ $json.executionId }}/retry",
@@ -198,7 +218,10 @@
       "name": "Record New Attempt",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1060, -160],
+      "position": [
+        1060,
+        -160
+      ],
       "parameters": {
         "jsCode": "// The retry created a new execution. Carry the attempt count forward so the\n// chain is bounded by MAX_RETRIES rather than restarting at 0 each time.\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.attempts) staticData.attempts = {};\n\nfor (const item of $input.all()) {\n  const prev = $('Decide Actions').itemMatching(item.pairedItem?.item ?? 0)?.json ?? {};\n  const newExec = item.json;\n  const newId = String(newExec.id ?? '');\n  const prevAttempts = prev.attempts ?? 0;\n  if (newId) {\n    staticData.attempts[newId] = prevAttempts + 1;\n  }\n}\n\nreturn $input.all();"
       }
@@ -208,7 +231,10 @@
       "name": "Alert: Slack",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.2,
-      "position": [800, 120],
+      "position": [
+        800,
+        120
+      ],
       "parameters": {
         "select": "channel",
         "channelId": {
@@ -225,7 +251,10 @@
       "name": "Alert: Telegram",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [800, 320],
+      "position": [
+        800,
+        320
+      ],
       "disabled": true,
       "parameters": {
         "chatId": "YOUR_CHAT_ID",
@@ -238,7 +267,10 @@
       "name": "Alert: Email",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
-      "position": [800, 520],
+      "position": [
+        800,
+        520
+      ],
       "disabled": true,
       "parameters": {
         "fromEmail": "alerts@example.com",
@@ -254,7 +286,10 @@
       "name": "Alert: WorkflowBuddy (iOS Push)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [800, 720],
+      "position": [
+        800,
+        720
+      ],
       "disabled": true,
       "parameters": {
         "method": "POST",
@@ -284,30 +319,92 @@
   ],
   "connections": {
     "Every 15 Minutes": {
-      "main": [[{ "node": "Config", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Config": {
-      "main": [[{ "node": "List Failed Executions", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "List Failed Executions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "List Failed Executions": {
-      "main": [[{ "node": "Decide Actions", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Decide Actions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Decide Actions": {
-      "main": [[{ "node": "Retry?", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Retry?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Retry?": {
       "main": [
-        [{ "node": "Retry Execution", "type": "main", "index": 0 }],
         [
-          { "node": "Alert: Slack", "type": "main", "index": 0 },
-          { "node": "Alert: Telegram", "type": "main", "index": 0 },
-          { "node": "Alert: Email", "type": "main", "index": 0 },
-          { "node": "Alert: WorkflowBuddy (iOS Push)", "type": "main", "index": 0 }
+          {
+            "node": "Retry Execution",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alert: Slack",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Alert: Telegram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Alert: Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Alert: WorkflowBuddy (iOS Push)",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Retry Execution": {
-      "main": [[{ "node": "Record New Attempt", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Record New Attempt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {

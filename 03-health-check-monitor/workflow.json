@@ -6,56 +6,57 @@
       "name": "Sticky Note – Overview",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [-1040, -60],
+      "position": [
+        -1040,
+        -60
+      ],
       "parameters": {
         "width": 460,
         "height": 620,
-        "content": "## ❤️ Health Check / Heartbeat Monitor\n\nCatches the failure mode that error alerts miss: a workflow that **silently stops running** (disabled by accident, broken trigger, dead cron). No error is ever thrown — it just goes quiet.\n\nThis workflow checks, on a schedule, when each of your critical workflows last *succeeded*. If the gap is too large, it alerts you.\n\n**How it works:**\n1. Runs on a schedule (default every hour).\n2. For each workflow you list, asks the n8n API for its most recent **successful** execution.\n3. If the last success is older than the per-workflow threshold (or there is none), it's flagged as stale and you get an alert.\n\n**Setup:**\n1. Edit the **Monitored Workflows** node: set `N8N_BASE_URL` and list the workflows to watch (id + max age).\n2. Add an **n8n API key** as a *Header Auth* credential (Name `X-N8N-API-KEY`) on the HTTP Request node.\n3. Choose an alert channel on the right.\n4. **Activate** the workflow.\n\n💡 Best practice: run this on a *second* n8n instance (or pair it with an external uptime monitor), so it can still alert you when the monitored instance itself is down."
+        "content": "## ❤️ Health Check / Heartbeat Monitor\n\nCatches the failure mode that error alerts miss: a workflow that **silently stops running** — disabled by accident, broken trigger, dead cron. No error is ever thrown, it just goes quiet.\n\n### How it works\n1. Runs on a schedule (default every hour).\n2. For each workflow you list, asks the n8n API for its most recent **successful** execution.\n3. If that success is older than the workflow's threshold — or there is none at all — the workflow is flagged as stale and you get one alert per stale workflow.\n\n### Setup\n1. In **Monitored Workflows**, set `N8N_BASE_URL` and list the workflows to watch (id + max age).\n2. Create an n8n API key (**Settings → n8n API**) and add it as a *Header Auth* credential — Name `X-N8N-API-KEY` — on the HTTP Request node.\n3. Enable one alert channel: Slack (default), Telegram, Email or WorkflowBuddy.\n4. **Activate** the workflow.\n\n### Customization tips\nRun this on a *second* n8n instance, or pair it with an external uptime monitor, so it can still reach you when the monitored instance itself is down."
       }
     },
     {
-      "id": "sticky-config",
-      "name": "Sticky Note – Monitored Workflows",
+      "parameters": {
+        "content": "## ⚙️ Check each workflow\n\nOn a schedule, ask the n8n API when each listed workflow last *succeeded* and compare it against that workflow's own threshold.",
+        "height": 255,
+        "width": 1010,
+        "color": 7
+      },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [-540, 220],
-      "parameters": {
-        "width": 340,
-        "height": 240,
-        "content": "## ⚙️ Which workflows to watch\n\nEdit the array in **Monitored Workflows**. One entry per workflow:\n\n```\n{ workflowId: '123', workflowName: 'Hourly Sync', maxAgeHours: 2 }\n```\n\nFind a workflow's id in its URL (`/workflow/<id>`). Set `maxAgeHours` to a bit more than its normal run interval — e.g. an hourly job → 2."
-      }
+      "position": [
+        -545,
+        -170
+      ],
+      "id": "sticky-section-1-03",
+      "name": "Sticky Note – ⚙️ Check each workflow"
     },
     {
-      "id": "sticky-alerts",
-      "name": "Sticky Note – Alert Channels",
+      "parameters": {
+        "content": "## 📣 Stale-workflow alert — pick your channel\n\nOne alert per stale workflow. Slack is enabled by default; enable another node and disable Slack.\n\n**WorkflowBuddy** delivers them as native iOS push: install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, then add it as a Header Auth credential `Authorization` / `Bearer wb_…`.",
+        "height": 855,
+        "width": 250,
+        "color": 7
+      },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [900, -280],
-      "parameters": {
-        "width": 400,
-        "height": 240,
-        "content": "## 📣 Stale-workflow alert — pick your channel(s)\n\n**Slack** is enabled by default. To use another channel, enable it and disable Slack:\n\n- **Telegram** — set your chat ID\n- **Email** — set from/to addresses\n- **WorkflowBuddy** — native iOS push, see the note below ⬇️\n\nOne alert per stale workflow."
-      }
-    },
-    {
-      "id": "sticky-workflowbuddy",
-      "name": "Sticky Note – WorkflowBuddy",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [900, 340],
-      "parameters": {
-        "width": 420,
-        "height": 360,
-        "color": 4,
-        "content": "## 📱 WorkflowBuddy (iOS push)\n\nGet \"workflow went silent\" alerts as native push notifications on your iPhone — no Slack or Telegram needed.\n\n1. Install [**Workflow Buddy**](https://apps.apple.com/app/id6760253861) from the App Store.\n2. In the app, open **Settings → Push API** and copy your key.\n3. In n8n, create a **Header Auth** credential:\n   - Name: `Authorization`\n   - Value: `Bearer wb_…` (your key)\n4. Select the credential in this node and enable it.\n\n*Free tier currently includes 50 pushes/day. Tapping the notification opens the app.*"
-      }
+      "position": [
+        495,
+        -10
+      ],
+      "id": "sticky-section-2-03",
+      "name": "Sticky Note – 📣 Stale-workflow alert — pick your chann"
     },
     {
       "id": "node-schedule",
       "name": "Every Hour",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
-      "position": [-520, -60],
+      "position": [
+        -520,
+        -60
+      ],
       "parameters": {
         "rule": {
           "interval": [
@@ -72,7 +73,10 @@
       "name": "Monitored Workflows",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [-300, -60],
+      "position": [
+        -300,
+        -60
+      ],
       "parameters": {
         "jsCode": "// ── Configuration ──────────────────────────────────────────────\nconst N8N_BASE_URL = 'https://n8n.example.com'; // no trailing slash\n\n// List the workflows to watch. Find a workflow's id in its URL: /workflow/<id>\nconst WORKFLOWS = [\n  { workflowId: '123', workflowName: 'Hourly Data Sync', maxAgeHours: 2 },\n  { workflowId: '456', workflowName: 'Nightly Backup', maxAgeHours: 26 },\n];\n// ───────────────────────────────────────────────────────────────\n\nreturn WORKFLOWS.map((w) => ({\n  json: { ...w, N8N_BASE_URL },\n}));"
       }
@@ -82,7 +86,10 @@
       "name": "Get Last Success",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [-40, -60],
+      "position": [
+        -40,
+        -60
+      ],
       "parameters": {
         "url": "={{ $json.N8N_BASE_URL }}/api/v1/executions",
         "authentication": "genericCredentialType",
@@ -112,7 +119,10 @@
       "name": "Evaluate Freshness",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [240, -60],
+      "position": [
+        240,
+        -60
+      ],
       "parameters": {
         "jsCode": "// For each monitored workflow, compare its last successful run to the threshold.\n// Only stale workflows are emitted (one item each) -> alerts fire only when needed.\nconst cfgItems = $('Monitored Workflows').all();\nconst inputs = $input.all();\nconst out = [];\n\nfor (let i = 0; i < inputs.length; i++) {\n  const cfg = cfgItems[i]?.json ?? {};\n  const data = inputs[i].json.data || [];\n  const latest = data[0];\n  const maxAgeHours = cfg.maxAgeHours ?? 24;\n  const name = cfg.workflowName ?? 'Unknown workflow';\n\n  let stale = false;\n  let ageHours = null;\n  let lastSuccess = 'never';\n\n  if (!latest) {\n    stale = true; // no successful execution on record\n  } else {\n    lastSuccess = latest.startedAt || latest.stoppedAt;\n    ageHours = (Date.now() - new Date(lastSuccess).getTime()) / 3_600_000;\n    stale = ageHours > maxAgeHours;\n  }\n\n  if (stale) {\n    out.push({\n      json: {\n        workflowName: name,\n        workflowId: cfg.workflowId,\n        maxAgeHours,\n        ageHours: ageHours === null ? null : Math.round(ageHours * 10) / 10,\n        lastSuccess,\n      },\n    });\n  }\n}\n\nreturn out;"
       }
@@ -122,7 +132,10 @@
       "name": "Alert: Slack",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.2,
-      "position": [520, 100],
+      "position": [
+        520,
+        100
+      ],
       "parameters": {
         "select": "channel",
         "channelId": {
@@ -139,7 +152,10 @@
       "name": "Alert: Telegram",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [520, 300],
+      "position": [
+        520,
+        300
+      ],
       "disabled": true,
       "parameters": {
         "chatId": "YOUR_CHAT_ID",
@@ -152,7 +168,10 @@
       "name": "Alert: Email",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
-      "position": [520, 500],
+      "position": [
+        520,
+        500
+      ],
       "disabled": true,
       "parameters": {
         "fromEmail": "alerts@example.com",
@@ -168,7 +187,10 @@
       "name": "Alert: WorkflowBuddy (iOS Push)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [520, 700],
+      "position": [
+        520,
+        700
+      ],
       "disabled": true,
       "parameters": {
         "method": "POST",
@@ -198,21 +220,61 @@
   ],
   "connections": {
     "Every Hour": {
-      "main": [[{ "node": "Monitored Workflows", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Monitored Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Monitored Workflows": {
-      "main": [[{ "node": "Get Last Success", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Get Last Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Get Last Success": {
-      "main": [[{ "node": "Evaluate Freshness", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Evaluate Freshness",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Evaluate Freshness": {
       "main": [
         [
-          { "node": "Alert: Slack", "type": "main", "index": 0 },
-          { "node": "Alert: Telegram", "type": "main", "index": 0 },
-          { "node": "Alert: Email", "type": "main", "index": 0 },
-          { "node": "Alert: WorkflowBuddy (iOS Push)", "type": "main", "index": 0 }
+          {
+            "node": "Alert: Slack",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Alert: Telegram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Alert: Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Alert: WorkflowBuddy (iOS Push)",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     }
