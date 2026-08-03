@@ -27,7 +27,7 @@
       "typeVersion": 1,
       "position": [
         -545,
-        -208
+        -208.0
       ],
       "id": "sticky-section-1-02",
       "name": "Sticky Note – ⚙️ Scan and decide"
@@ -43,7 +43,7 @@
       "typeVersion": 1,
       "position": [
         775,
-        -328
+        -328.0
       ],
       "id": "sticky-section-2-02",
       "name": "Sticky Note – 🔁 Retry path"
@@ -58,8 +58,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        670,
-        215
+        775,
+        95.0
       ],
       "id": "sticky-section-3-02",
       "name": "Sticky Note – 📣 \"Gave up\" alert — pick your channel"
@@ -233,7 +233,7 @@
       "typeVersion": 2.2,
       "position": [
         800,
-        403.0
+        283.0
       ],
       "parameters": {
         "select": "channel",
@@ -253,7 +253,7 @@
       "typeVersion": 1.2,
       "position": [
         800,
-        603.0
+        483.0
       ],
       "disabled": true,
       "parameters": {
@@ -269,7 +269,7 @@
       "typeVersion": 2.1,
       "position": [
         800,
-        803.0
+        683.0
       ],
       "disabled": true,
       "parameters": {
@@ -288,7 +288,7 @@
       "typeVersion": 4.2,
       "position": [
         800,
-        1003.0
+        883.0
       ],
       "disabled": true,
       "parameters": {

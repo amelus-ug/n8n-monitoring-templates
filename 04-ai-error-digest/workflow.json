@@ -27,7 +27,7 @@
       "typeVersion": 1,
       "position": [
         -605,
-        -228
+        -228.0
       ],
       "id": "sticky-section-1-04",
       "name": "Sticky Note – ⚙️ Collect and aggregate"
@@ -43,7 +43,7 @@
       "typeVersion": 1,
       "position": [
         355,
-        -248
+        -248.0
       ],
       "id": "sticky-section-2-04",
       "name": "Sticky Note – 🧠 Summarize with an LLM"
@@ -58,8 +58,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1050,
-        -368
+        1155,
+        -368.0
       ],
       "id": "sticky-section-3-04",
       "name": "Sticky Note – 📣 Daily digest — pick your channel"
@@ -163,7 +163,7 @@
       "typeVersion": 2.2,
       "position": [
         380,
-        803
+        -60
       ],
       "parameters": {
         "conditions": {
@@ -196,7 +196,7 @@
       "typeVersion": 1.2,
       "position": [
         420,
-        1023
+        160
       ],
       "parameters": {
         "model": {
@@ -214,7 +214,7 @@
       "typeVersion": 1.5,
       "position": [
         620,
-        803
+        -60
       ],
       "parameters": {
         "promptType": "define",
@@ -231,7 +231,7 @@
       "typeVersion": 3.4,
       "position": [
         880,
-        803
+        -60
       ],
       "parameters": {
         "assignments": {
@@ -344,7 +344,7 @@
       "typeVersion": 1,
       "position": [
         620,
-        1283
+        420
       ],
       "parameters": {}
     }

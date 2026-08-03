@@ -27,7 +27,7 @@
       "typeVersion": 1,
       "position": [
         -585,
-        -85
+        -85.0
       ],
       "id": "sticky-section-1-05",
       "name": "Sticky Note – ⏱️ Start, run, measure"
@@ -42,8 +42,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -230,
-        -728
+        -125,
+        -728.0
       ],
       "id": "sticky-section-2-05",
       "name": "Sticky Note – 🚀 \"Started\" notification"
@@ -58,8 +58,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        490,
-        -388
+        595,
+        -388.0
       ],
       "id": "sticky-section-3-05",
       "name": "Sticky Note – ✅ \"Finished\" notification — pick your ch"

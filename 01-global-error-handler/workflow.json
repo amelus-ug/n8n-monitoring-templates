@@ -27,7 +27,7 @@
       "typeVersion": 1,
       "position": [
         -245,
-        132
+        132.0
       ],
       "id": "sticky-section-1-01",
       "name": "Sticky Note – ⚙️ Catch, classify, log"
@@ -42,8 +42,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        750,
-        -108
+        855,
+        -108.0
       ],
       "id": "sticky-section-2-01",
       "name": "Sticky Note – 📣 Critical alerts — pick your channel"
@@ -55,7 +55,7 @@
       "typeVersion": 1,
       "position": [
         -220,
-        1303
+        300
       ],
       "parameters": {}
     },
@@ -66,7 +66,7 @@
       "typeVersion": 2,
       "position": [
         40,
-        1303
+        300
       ],
       "parameters": {
         "jsCode": "// ── Configuration ──────────────────────────────────────────────\nconst CRITICAL_TAG = '[critical]'; // mark workflows by name, e.g. \"Invoice Sync [critical]\"\nconst CRITICAL_KEYWORDS = ['payment', 'billing', 'invoice']; // name keywords that are always critical\n// ───────────────────────────────────────────────────────────────\n\nconst data = $json;\n\nconst workflowName = data.workflow?.name ?? 'Unknown workflow';\nconst workflowId = data.workflow?.id ?? '';\nconst executionId = data.execution?.id ?? '';\nconst executionUrl = data.execution?.url ?? '';\nconst nodeName = data.execution?.lastNodeExecuted ?? 'Unknown node';\nconst errorMessage =\n  data.execution?.error?.message ??\n  data.trigger?.error?.message ??\n  'Unknown error';\n\nconst nameLower = workflowName.toLowerCase();\nconst isCritical =\n  nameLower.includes(CRITICAL_TAG.toLowerCase()) ||\n  CRITICAL_KEYWORDS.some((kw) => nameLower.includes(kw.toLowerCase()));\n\nreturn [\n  {\n    json: {\n      timestamp: new Date().toISOString(),\n      severity: isCritical ? 'critical' : 'warning',\n      workflowName,\n      workflowId,\n      executionId,\n      executionUrl,\n      nodeName,\n      errorMessage,\n      isCritical,\n    },\n  },\n];"
@@ -79,7 +79,7 @@
       "typeVersion": 4.5,
       "position": [
         320,
-        1303
+        300
       ],
       "parameters": {
         "operation": "append",
@@ -109,7 +109,7 @@
       "typeVersion": 2.2,
       "position": [
         580,
-        1303
+        300
       ],
       "parameters": {
         "conditions": {

@@ -27,7 +27,7 @@
       "typeVersion": 1,
       "position": [
         -545,
-        -228
+        -228.0
       ],
       "id": "sticky-section-1-03",
       "name": "Sticky Note – ⚙️ Check each workflow"
@@ -35,15 +35,15 @@
     {
       "parameters": {
         "content": "## 📣 Stale-workflow alert — pick your channel\n\nOne alert per stale workflow. Slack is enabled by default; enable another node and disable Slack. **WorkflowBuddy** sends them as native iOS push — setup in the overview.",
-        "height": 823,
+        "height": 1023,
         "width": 460,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        390,
-        195
+        495,
+        -108.0
       ],
       "id": "sticky-section-2-03",
       "name": "Sticky Note – 📣 Stale-workflow alert — pick your chann"
@@ -134,7 +134,7 @@
       "typeVersion": 2.2,
       "position": [
         520,
-        403
+        100
       ],
       "parameters": {
         "select": "channel",
@@ -154,7 +154,7 @@
       "typeVersion": 1.2,
       "position": [
         520,
-        603
+        300
       ],
       "disabled": true,
       "parameters": {
@@ -170,7 +170,7 @@
       "typeVersion": 2.1,
       "position": [
         520,
-        803
+        500
       ],
       "disabled": true,
       "parameters": {
@@ -189,7 +189,7 @@
       "typeVersion": 4.2,
       "position": [
         520,
-        1003
+        700
       ],
       "disabled": true,
       "parameters": {
