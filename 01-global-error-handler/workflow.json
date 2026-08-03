@@ -13,13 +13,13 @@
       "parameters": {
         "width": 460,
         "height": 600,
-        "content": "## 🚨 Global Error Handler\n\nOne central workflow that catches failures from **all** your other workflows, logs every error, and escalates only the critical ones.\n\n### How it works\n1. An **Error Trigger** receives failures from any workflow that points here.\n2. **Classify Severity** marks the failure `critical` or `warning`, based on the workflow name.\n3. Every error is appended to a Google Sheet as an audit trail.\n4. Critical errors additionally fire an instant alert on the channel you enable.\n\n### Setup\n1. Activate this workflow.\n2. In every workflow you want to monitor, open **Settings → Error Workflow** and select this one.\n3. Create a Google Sheet with the header row from the *Error log* note, then set your credentials on **Log to Error Sheet**.\n4. Enable one alert channel: Slack (default), Telegram, Email or WorkflowBuddy.\n\n### Customization tips\nEdit `CRITICAL_TAG` and `CRITICAL_KEYWORDS` in **Classify Severity** to decide what escalates. Prefer a database? Swap the Sheet for Postgres, Airtable or Notion — the field names stay the same.\n\nAn error workflow cannot catch its own failures, so keep this one simple and test it once with a deliberately failing workflow."
+        "content": "## 🚨 Global Error Handler\n\nOne central workflow that catches failures from **all** your other workflows, logs every error, and escalates only the critical ones.\n\n### How it works\n1. An **Error Trigger** receives failures from any workflow that points here.\n2. **Classify Severity** marks the failure `critical` or `warning`, based on the workflow name.\n3. Every error is appended to a Google Sheet as an audit trail.\n4. Critical errors additionally fire an instant alert on the channel you enable.\n\n### Setup\n1. Activate this workflow.\n2. In every workflow you want to monitor, open **Settings → Error Workflow** and select this one.\n3. Create a Google Sheet with the header row from the *Error log* note, then set your credentials on **Log to Error Sheet**.\n4. Enable one alert channel: Slack (default), Telegram, Email or WorkflowBuddy.\n\nUsing **WorkflowBuddy** for the alerts? Install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, and add it in n8n as a Header Auth credential: `Authorization` / `Bearer wb_…`.\n\n### Customization tips\nEdit `CRITICAL_TAG` and `CRITICAL_KEYWORDS` in **Classify Severity** to decide what escalates. Prefer a database? Swap the Sheet for Postgres, Airtable or Notion — the field names stay the same.\n\nAn error workflow cannot catch its own failures, so keep this one simple and test it once with a deliberately failing workflow."
       }
     },
     {
       "parameters": {
         "content": "## ⚙️ Catch, classify, log\n\nEvery failure lands here, gets marked `critical` or `warning` from the workflow name, and is appended to the sheet before anything is escalated.",
-        "height": 255,
+        "height": 243,
         "width": 1050,
         "color": 7
       },
@@ -27,23 +27,23 @@
       "typeVersion": 1,
       "position": [
         -245,
-        190
+        202.0
       ],
       "id": "sticky-section-1-01",
       "name": "Sticky Note – ⚙️ Catch, classify, log"
     },
     {
       "parameters": {
-        "content": "## 📣 Critical alerts — pick your channel\n\nSlack is enabled by default; enable another node and disable Slack.\n\n**WorkflowBuddy** delivers them as native iOS push: install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, then add it as a Header Auth credential `Authorization` / `Bearer wb_…`.",
-        "height": 1055,
-        "width": 250,
+        "content": "## 📣 Critical alerts — pick your channel\n\nSlack is enabled by default; enable another node and disable Slack. **WorkflowBuddy** sends them as native iOS push — setup in the overview.",
+        "height": 1063,
+        "width": 460,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         855,
-        -30
+        -38.0
       ],
       "id": "sticky-section-2-01",
       "name": "Sticky Note – 📣 Critical alerts — pick your channel"

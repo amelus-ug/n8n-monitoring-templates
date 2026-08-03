@@ -13,13 +13,13 @@
       "parameters": {
         "width": 460,
         "height": 600,
-        "content": "## ⏱️ Long-Running Job Notifier\n\nWrap any slow workflow — big export, batch import, video render, nightly ETL — so you get a notification when it **starts** and another when it **finishes**, with the total duration. No more babysitting a tab.\n\n### How it works\n1. **Mark Start** stamps the start time and fires the \"started\" notification.\n2. Your actual job runs.\n3. **Mark Done** computes the duration and fires the \"finished\" notification.\n\nBoth notifications sit on side branches, so the job itself runs whether or not a channel is enabled.\n\n### Setup\n1. Replace the **▶ Your Long Job Here** node with your actual work.\n2. Set the job name in the **Mark Start** node.\n3. Enable one notification channel: Slack (default), Telegram, Email or WorkflowBuddy.\n4. Swap the Manual Trigger for your real trigger, then activate.\n\n### Customization tips\nThe **Wait** node simulates a slow job so your first test run shows a real duration — delete it once your own steps are in place."
+        "content": "## ⏱️ Long-Running Job Notifier\n\nWrap any slow workflow — big export, batch import, video render, nightly ETL — so you get a notification when it **starts** and another when it **finishes**, with the total duration. No more babysitting a tab.\n\n### How it works\n1. **Mark Start** stamps the start time and fires the \"started\" notification.\n2. Your actual job runs.\n3. **Mark Done** computes the duration and fires the \"finished\" notification.\n\nBoth notifications sit on side branches, so the job itself runs whether or not a channel is enabled.\n\n### Setup\n1. Replace the **▶ Your Long Job Here** node with your actual work.\n2. Set the job name in the **Mark Start** node.\n3. Enable one notification channel: Slack (default), Telegram, Email or WorkflowBuddy.\n4. Swap the Manual Trigger for your real trigger, then activate.\n\nUsing **WorkflowBuddy** for the alerts? Install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, and add it in n8n as a Header Auth credential: `Authorization` / `Bearer wb_…`.\n\n### Customization tips\nThe **Wait** node simulates a slow job so your first test run shows a real duration — delete it once your own steps are in place."
       }
     },
     {
       "parameters": {
         "content": "## ⏱️ Start, run, measure\n\n**Mark Start** stamps the time, your job runs in place of the Wait node, **Mark Done** computes the duration.",
-        "height": 255,
+        "height": 243,
         "width": 990,
         "color": 7
       },
@@ -27,7 +27,7 @@
       "typeVersion": 1,
       "position": [
         -585,
-        -190
+        -178.0
       ],
       "id": "sticky-section-1-05",
       "name": "Sticky Note – ⏱️ Start, run, measure"
@@ -35,31 +35,31 @@
     {
       "parameters": {
         "content": "## 🚀 \"Started\" notification\n\nFires the moment the job begins. Copy a node from the *Finished* group for Telegram or Email.",
-        "height": 455,
-        "width": 250,
+        "height": 463,
+        "width": 460,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         -125,
-        -650
+        -658.0
       ],
       "id": "sticky-section-2-05",
       "name": "Sticky Note – 🚀 \"Started\" notification"
     },
     {
       "parameters": {
-        "content": "## ✅ \"Finished\" notification — pick your channel\n\nCarries the total duration. Slack is enabled by default; enable another node and disable Slack.\n\n**WorkflowBuddy** delivers them as native iOS push: install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, then add it as a Header Auth credential `Authorization` / `Bearer wb_…`.",
-        "height": 735,
-        "width": 250,
+        "content": "## ✅ \"Finished\" notification — pick your channel\n\nCarries the total duration. Slack is enabled by default; enable another node and disable Slack. **WorkflowBuddy** sends them as native iOS push — setup in the overview.",
+        "height": 763,
+        "width": 460,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         595,
-        -290
+        -318.0
       ],
       "id": "sticky-section-3-05",
       "name": "Sticky Note – ✅ \"Finished\" notification — pick your ch"
