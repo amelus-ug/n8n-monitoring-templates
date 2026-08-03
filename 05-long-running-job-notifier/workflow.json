@@ -337,8 +337,7 @@
   },
   "settings": {
     "executionOrder": "v1",
-    "binaryMode": "separate",
-    "availableInMCP": false
+    "binaryMode": "separate"
   },
   "meta": {
     "templateCredsSetupCompleted": false
