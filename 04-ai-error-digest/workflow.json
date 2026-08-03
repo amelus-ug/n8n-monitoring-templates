@@ -2,98 +2,88 @@
   "name": "AI Error Digest – Daily Failure Summary",
   "nodes": [
     {
-      "id": "sticky-overview",
+      "parameters": {
+        "content": "## 🤖 AI Error Digest\n\nInstead of a push for every single failure, get **one** calm summary a day: what failed, how often, and what to look at first — written by an LLM.\n\n### How it works\n1. Runs once a day (default 08:00).\n2. Pulls the last 24 h of `error` executions from the n8n API.\n3. Aggregates them by workflow.\n4. An LLM turns the raw counts into a prioritized, plain-language digest.\n5. Delivers it as a single message on the channel you enable.\n\n### Setup\n1. Set `N8N_BASE_URL` and `LOOKBACK_HOURS` in the **Config** node.\n2. Create an n8n API key (**Settings → n8n API**) and add it as a *Header Auth* credential — Name `X-N8N-API-KEY` — on the HTTP Request node.\n3. Add your LLM credential to the **Chat Model** node.\n4. Enable one delivery channel: Slack (default), Telegram, Email or WorkflowBuddy.\n5. **Activate** the workflow.\n\nUsing **WorkflowBuddy** for the alerts? Install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, and add it in n8n as a Header Auth credential: `Authorization` / `Bearer wb_…`.\n\n### Customization tips\nSwap **Chat Model** for any chat model node — Anthropic, Gemini, Ollama, Groq — the prompt stays the same. If there were no failures in the window, a short \"all clear\" branch runs instead (disabled by default).",
+        "height": 958,
+        "width": 460
+      },
+      "id": "63cdbdf2-8c8c-4a77-b32e-3075d8022aaa",
       "name": "Sticky Note – Overview",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1100,
-        -180
-      ],
-      "parameters": {
-        "width": 460,
-        "height": 958,
-        "content": "## 🤖 AI Error Digest\n\nInstead of a push for every single failure, get **one** calm summary a day: what failed, how often, and what to look at first — written by an LLM.\n\n### How it works\n1. Runs once a day (default 08:00).\n2. Pulls the last 24 h of `error` executions from the n8n API.\n3. Aggregates them by workflow.\n4. An LLM turns the raw counts into a prioritized, plain-language digest.\n5. Delivers it as a single message on the channel you enable.\n\n### Setup\n1. Set `N8N_BASE_URL` and `LOOKBACK_HOURS` in the **Config** node.\n2. Create an n8n API key (**Settings → n8n API**) and add it as a *Header Auth* credential — Name `X-N8N-API-KEY` — on the HTTP Request node.\n3. Add your LLM credential to the **Chat Model** node.\n4. Enable one delivery channel: Slack (default), Telegram, Email or WorkflowBuddy.\n5. **Activate** the workflow.\n\nUsing **WorkflowBuddy** for the alerts? Install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, and add it in n8n as a Header Auth credential: `Authorization` / `Bearer wb_…`.\n\n### Customization tips\nSwap **Chat Model** for any chat model node — Anthropic, Gemini, Ollama, Groq — the prompt stays the same. If there were no failures in the window, a short \"all clear\" branch runs instead (disabled by default)."
-      }
+        -2256,
+        144
+      ]
     },
     {
       "parameters": {
         "content": "## ⚙️ Collect and aggregate\n\nOnce a day, pull the last 24 h of failed executions and group them by workflow.",
-        "height": 383,
+        "height": 313,
         "width": 950,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -605,
-        -228.0
+        -1760,
+        144
       ],
-      "id": "sticky-section-1-04",
+      "id": "3b751fff-9e8d-4870-908f-19d542f07400",
       "name": "Sticky Note – ⚙️ Collect and aggregate"
     },
     {
       "parameters": {
         "content": "## 🧠 Summarize with an LLM\n\n**Chat Model** is OpenAI by default — swap it for any chat model node, the prompt stays the same. No failures in the window takes the *All Clear* branch.",
-        "height": 883,
+        "height": 813,
         "width": 750,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        355,
-        -248.0
+        -800,
+        144
       ],
-      "id": "sticky-section-2-04",
+      "id": "1444e2a9-6406-4029-a895-e97db1e167bd",
       "name": "Sticky Note – 🧠 Summarize with an LLM"
     },
     {
       "parameters": {
         "content": "## 📣 Daily digest — pick your channel\n\nOne message a day. Slack is enabled by default; enable another node and disable Slack. **WorkflowBuddy** sends them as native iOS push — setup in the overview.",
-        "height": 943,
+        "height": 1017,
         "width": 460,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1155,
-        -368.0
+        0,
+        144
       ],
-      "id": "sticky-section-3-04",
+      "id": "13a21f9b-45e1-44cd-a635-5f046c73dd35",
       "name": "Sticky Note – 📣 Daily digest — pick your channel"
     },
     {
-      "id": "node-schedule",
-      "name": "Every Day at 08:00",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        -580,
-        -60
-      ],
       "parameters": {
         "rule": {
           "interval": [
             {
-              "field": "days",
-              "daysInterval": 1,
               "triggerAtHour": 8
             }
           ]
         }
-      }
+      },
+      "id": "546f8314-3c2f-4feb-bc7e-b8b40c90c938",
+      "name": "Every Day at 08:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1648,
+        320
+      ]
     },
     {
-      "id": "node-config",
-      "name": "Config",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -360,
-        -60
-      ],
       "parameters": {
         "assignments": {
           "assignments": [
@@ -112,17 +102,17 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "f162533f-859c-4e45-97f0-9a84229a0dfe",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1456,
+        320
+      ]
     },
     {
-      "id": "node-list-errors",
-      "name": "List Failed Executions",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -140,
-        -60
-      ],
       "parameters": {
         "url": "={{ $json.N8N_BASE_URL }}/api/v1/executions",
         "authentication": "genericCredentialType",
@@ -141,34 +131,35 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "8b413fc8-eb1c-446d-bbaa-d39ed93a6b45",
+      "name": "List Failed Executions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1248,
+        320
+      ]
     },
     {
-      "id": "node-aggregate",
+      "parameters": {
+        "jsCode": "// Group the last LOOKBACK_HOURS of error executions by workflow.\nconst cfg = $('Config').first().json;\nconst lookbackHours = cfg.LOOKBACK_HOURS ?? 24;\nconst cutoff = Date.now() - lookbackHours * 3_600_000;\n\nconst body = $input.first().json;\nconst execs = (body.data || []).filter((e) => {\n  const t = new Date(e.startedAt || e.stoppedAt || 0).getTime();\n  return t >= cutoff;\n});\n\nconst groups = {};\nfor (const e of execs) {\n  const name = e.workflowData?.name ?? `workflow ${e.workflowId ?? '?'}`;\n  groups[name] = (groups[name] ?? 0) + 1;\n}\n\nconst total = execs.length;\nconst lines = Object.entries(groups)\n  .sort((a, b) => b[1] - a[1])\n  .map(([name, count]) => `- ${name}: ${count} failure(s)`);\n\nconst errorReport =\n  total === 0\n    ? `No failed executions in the last ${lookbackHours}h.`\n    : `Total failed executions in the last ${lookbackHours}h: ${total}\\nBy workflow (most failures first):\\n${lines.join('\\n')}`;\n\nreturn [{ json: { hasErrors: total > 0, total, lookbackHours, errorReport } }];"
+      },
+      "id": "083280c0-9de7-46aa-ae95-e39102520112",
       "name": "Aggregate Errors",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        120,
-        -60
-      ],
-      "parameters": {
-        "jsCode": "// Group the last LOOKBACK_HOURS of error executions by workflow.\nconst cfg = $('Config').first().json;\nconst lookbackHours = cfg.LOOKBACK_HOURS ?? 24;\nconst cutoff = Date.now() - lookbackHours * 3_600_000;\n\nconst body = $input.first().json;\nconst execs = (body.data || []).filter((e) => {\n  const t = new Date(e.startedAt || e.stoppedAt || 0).getTime();\n  return t >= cutoff;\n});\n\nconst groups = {};\nfor (const e of execs) {\n  const name = e.workflowData?.name ?? `workflow ${e.workflowId ?? '?'}`;\n  groups[name] = (groups[name] ?? 0) + 1;\n}\n\nconst total = execs.length;\nconst lines = Object.entries(groups)\n  .sort((a, b) => b[1] - a[1])\n  .map(([name, count]) => `- ${name}: ${count} failure(s)`);\n\nconst errorReport =\n  total === 0\n    ? `No failed executions in the last ${lookbackHours}h.`\n    : `Total failed executions in the last ${lookbackHours}h: ${total}\\nBy workflow (most failures first):\\n${lines.join('\\n')}`;\n\nreturn [{ json: { hasErrors: total > 0, total, lookbackHours, errorReport } }];"
-      }
+        -1040,
+        320
+      ]
     },
     {
-      "id": "node-if-errors",
-      "name": "Any Errors?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        380,
-        -60
-      ],
       "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
+            "leftValue": "",
             "typeValidation": "strict",
             "version": 2
           },
@@ -187,17 +178,17 @@
           "combinator": "and"
         },
         "options": {}
-      }
+      },
+      "id": "fb3ab748-c8da-498a-9dc2-ad76f372b96b",
+      "name": "Any Errors?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -736,
+        320
+      ]
     },
     {
-      "id": "node-chat-model",
-      "name": "Chat Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "typeVersion": 1.2,
-      "position": [
-        420,
-        160
-      ],
       "parameters": {
         "model": {
           "__rl": true,
@@ -205,34 +196,34 @@
           "value": "gpt-4o-mini"
         },
         "options": {}
-      }
+      },
+      "id": "e0d33541-b00d-43f7-a1c9-9247171a3237",
+      "name": "Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -528,
+        544
+      ]
     },
     {
-      "id": "node-summarize",
-      "name": "Summarize Errors",
-      "type": "@n8n/n8n-nodes-langchain.chainLlm",
-      "typeVersion": 1.5,
-      "position": [
-        620,
-        -60
-      ],
       "parameters": {
         "promptType": "define",
         "text": "=You are an SRE assistant. Write a short daily error digest for an n8n operator based on the data below. Be concise (max ~600 characters), plain language, no markdown headers. Lead with the single most important thing to check first, then list the rest briefly. If counts are high, say so plainly.\n\nData:\n{{ $json.errorReport }}",
         "messages": {
           "messageValues": []
         }
-      }
+      },
+      "id": "c9d82d7c-5185-488d-957a-5013c3ac011c",
+      "name": "Summarize Errors",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -528,
+        320
+      ]
     },
     {
-      "id": "node-format",
-      "name": "Build Digest Message",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        880,
-        -60
-      ],
       "parameters": {
         "assignments": {
           "assignments": [
@@ -245,17 +236,17 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "1ac1d42a-f7ed-4a02-84ca-977e781b1d3a",
+      "name": "Build Digest Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -272,
+        320
+      ]
     },
     {
-      "id": "node-alert-slack",
-      "name": "Send: Slack",
-      "type": "n8n-nodes-base.slack",
-      "typeVersion": 2.2,
-      "position": [
-        1180,
-        -180
-      ],
       "parameters": {
         "select": "channel",
         "channelId": {
@@ -265,34 +256,35 @@
         },
         "text": "=📋 *Daily n8n error digest*\n{{ $json.digest }}",
         "otherOptions": {}
-      }
+      },
+      "id": "0539dd0b-7c87-40f4-9e27-369e1757bdbe",
+      "name": "Send: Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        80,
+        352
+      ],
+      "webhookId": "aa98f67d-af76-424e-ad57-c8415471a72a"
     },
     {
-      "id": "node-alert-telegram",
-      "name": "Send: Telegram",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        1180,
-        0
-      ],
-      "disabled": true,
       "parameters": {
         "chatId": "YOUR_CHAT_ID",
         "text": "=📋 Daily n8n error digest\n{{ $json.digest }}",
         "additionalFields": {}
-      }
+      },
+      "id": "93406e74-624a-4e75-9f80-0b2d286615af",
+      "name": "Send: Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        544
+      ],
+      "webhookId": "744e3807-6bed-4030-8617-015a026e8b9f",
+      "disabled": true
     },
     {
-      "id": "node-alert-email",
-      "name": "Send: Email",
-      "type": "n8n-nodes-base.emailSend",
-      "typeVersion": 2.1,
-      "position": [
-        1180,
-        180
-      ],
-      "disabled": true,
       "parameters": {
         "fromEmail": "alerts@example.com",
         "toEmail": "you@example.com",
@@ -300,18 +292,19 @@
         "emailFormat": "text",
         "text": "={{ $json.digest }}",
         "options": {}
-      }
+      },
+      "id": "ab03c8c9-013e-4ddc-b2b9-4005da268c86",
+      "name": "Send: Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        752
+      ],
+      "webhookId": "324c53d2-85a4-48a6-b322-cf987e6aa1a5",
+      "disabled": true
     },
     {
-      "id": "node-alert-workflowbuddy",
-      "name": "Send: WorkflowBuddy (iOS Push)",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1180,
-        360
-      ],
-      "disabled": true,
       "parameters": {
         "method": "POST",
         "url": "https://companion.amelus.de/api/notify",
@@ -335,20 +328,30 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "74830c9b-1427-4555-8f1b-efa3d3bfe76a",
+      "name": "Send: WorkflowBuddy (iOS Push)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        80,
+        944
+      ],
+      "disabled": true
     },
     {
-      "id": "node-all-clear",
+      "parameters": {},
+      "id": "0ffbd53c-44ca-41fe-a620-56183590cd79",
       "name": "All Clear (No Errors)",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        620,
-        420
-      ],
-      "parameters": {}
+        -528,
+        800
+      ]
     }
   ],
+  "pinData": {},
   "connections": {
     "Every Day at 08:00": {
       "main": [
@@ -462,9 +465,10 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
   },
-  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": false
   }
