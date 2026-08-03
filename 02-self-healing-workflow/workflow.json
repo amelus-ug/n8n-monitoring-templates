@@ -2,77 +2,69 @@
   "name": "Self-Healing Workflow – Auto-Retry Failed Executions",
   "nodes": [
     {
-      "id": "sticky-overview",
+      "parameters": {
+        "content": "## 🔁 Self-Healing Workflow\n\nAutomatically retries failed executions across your whole n8n instance, and alerts you only once the retries are exhausted — so transient glitches (rate limits, brief outages) heal themselves silently.\n\n### How it works\n1. Runs on a schedule (default every 15 min).\n2. Lists recent `error` executions via the n8n API.\n3. Retries each one up to `MAX_RETRIES` times, tracking attempts in the workflow's static data.\n4. When a job still fails after the last attempt, it gives up and sends one alert.\n\n### Setup\n1. Set `N8N_BASE_URL` in the **Config** node (no trailing slash).\n2. Create an n8n API key (**Settings → n8n API**) and add it as a *Header Auth* credential — Name `X-N8N-API-KEY` — on the three HTTP Request nodes.\n3. Enable one alert channel: Slack (default), Telegram, Email or WorkflowBuddy.\n4. **Activate** the workflow — static-data retry tracking only persists in production runs, not in manual tests.\n\nUsing **WorkflowBuddy** for the alerts? Install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, and add it in n8n as a Header Auth credential: `Authorization` / `Bearer wb_…`.\n\n### Customization tips\nTune `MAX_RETRIES` and `LOOKBACK_LIMIT` in **Config**. A retry re-runs the workflow with the data captured at failure time, so make sure your workflows are safe to re-run — avoid sending the same email twice.",
+        "height": 983,
+        "width": 460
+      },
+      "id": "5b3cf2a1-d758-4905-823d-9b226667d433",
       "name": "Sticky Note – Overview",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1040,
-        -160
-      ],
-      "parameters": {
-        "width": 460,
-        "height": 983,
-        "content": "## 🔁 Self-Healing Workflow\n\nAutomatically retries failed executions across your whole n8n instance, and alerts you only once the retries are exhausted — so transient glitches (rate limits, brief outages) heal themselves silently.\n\n### How it works\n1. Runs on a schedule (default every 15 min).\n2. Lists recent `error` executions via the n8n API.\n3. Retries each one up to `MAX_RETRIES` times, tracking attempts in the workflow's static data.\n4. When a job still fails after the last attempt, it gives up and sends one alert.\n\n### Setup\n1. Set `N8N_BASE_URL` in the **Config** node (no trailing slash).\n2. Create an n8n API key (**Settings → n8n API**) and add it as a *Header Auth* credential — Name `X-N8N-API-KEY` — on the three HTTP Request nodes.\n3. Enable one alert channel: Slack (default), Telegram, Email or WorkflowBuddy.\n4. **Activate** the workflow — static-data retry tracking only persists in production runs, not in manual tests.\n\nUsing **WorkflowBuddy** for the alerts? Install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, and add it in n8n as a Header Auth credential: `Authorization` / `Bearer wb_…`.\n\n### Customization tips\nTune `MAX_RETRIES` and `LOOKBACK_LIMIT` in **Config**. A retry re-runs the workflow with the data captured at failure time, so make sure your workflows are safe to re-run — avoid sending the same email twice."
-      }
+        -1840,
+        80
+      ]
     },
     {
       "parameters": {
         "content": "## ⚙️ Scan and decide\n\nOn a schedule, list recent failed executions and work out per execution whether to retry, give up, or skip it.",
-        "height": 383,
-        "width": 1290,
+        "height": 313,
+        "width": 1306,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -545,
-        -208.0
+        -1344,
+        128
       ],
-      "id": "sticky-section-1-02",
+      "id": "9aef9053-feb2-433a-b77b-b707aa189660",
       "name": "Sticky Note – ⚙️ Scan and decide"
     },
     {
       "parameters": {
         "content": "## 🔁 Retry path\n\nRe-runs the execution and records the new attempt, so the count carries forward.",
-        "height": 383,
+        "height": 313,
         "width": 510,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        775,
-        -328.0
+        16,
+        -64
       ],
-      "id": "sticky-section-2-02",
+      "id": "374ebde7-084f-4eb8-b573-316cc391be5b",
       "name": "Sticky Note – 🔁 Retry path"
     },
     {
       "parameters": {
         "content": "## 📣 \"Gave up\" alert — pick your channel\n\nSlack is enabled by default; enable another node and disable Slack. **WorkflowBuddy** sends them as native iOS push — setup in the overview.",
-        "height": 1003,
-        "width": 460,
+        "height": 1077,
+        "width": 508,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        775,
-        95.0
+        16,
+        320
       ],
-      "id": "sticky-section-3-02",
+      "id": "622c6f56-b548-4bb2-b28b-185b0887ce31",
       "name": "Sticky Note – 📣 \"Gave up\" alert — pick your channel"
     },
     {
-      "id": "node-schedule",
-      "name": "Every 15 Minutes",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        -520,
-        -40
-      ],
       "parameters": {
         "rule": {
           "interval": [
@@ -82,17 +74,17 @@
             }
           ]
         }
-      }
+      },
+      "id": "3d147d4f-4179-4842-b3c3-d7907c90b3be",
+      "name": "Every 15 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1296,
+        288
+      ]
     },
     {
-      "id": "node-config",
-      "name": "Config",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -300,
-        -40
-      ],
       "parameters": {
         "assignments": {
           "assignments": [
@@ -117,17 +109,17 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "c808d474-77c4-4d3c-b032-184ca96ee268",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1072,
+        288
+      ]
     },
     {
-      "id": "node-list-errors",
-      "name": "List Failed Executions",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -80,
-        -40
-      ],
       "parameters": {
         "url": "={{ $json.N8N_BASE_URL }}/api/v1/executions",
         "authentication": "genericCredentialType",
@@ -146,34 +138,35 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "73b9802a-2b61-4aa0-9005-5399819a1826",
+      "name": "List Failed Executions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -848,
+        288
+      ]
     },
     {
-      "id": "node-decide",
+      "parameters": {
+        "jsCode": "// Reads recent error executions and decides per execution:\n//   'retry'  -> attempts left\n//   'giveup' -> exhausted, alert once\n// Attempt counts are tracked in workflow static data and chained across retries.\n\nconst cfg = $('Config').first().json;\nconst MAX_RETRIES = cfg.MAX_RETRIES ?? 3;\n\nconst body = $input.first().json;\nconst executions = Array.isArray(body.data) ? body.data : [];\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.attempts) staticData.attempts = {}; // execId -> number\nif (!staticData.done) staticData.done = {};         // execId -> true\n\nconst out = [];\n\nfor (const exec of executions) {\n  const execId = String(exec.id);\n\n  // Already fully handled (retried or given up) -> skip\n  if (staticData.done[execId]) continue;\n\n  const attempts = staticData.attempts[execId] ?? 0;\n  const workflowId = exec.workflowId ?? exec.workflowData?.id ?? '';\n  const workflowName = exec.workflowData?.name ?? 'Unknown workflow';\n\n  if (attempts < MAX_RETRIES) {\n    // Mark this execution as handled so we don't pick it again next run.\n    staticData.done[execId] = true;\n    out.push({\n      json: { action: 'retry', executionId: execId, workflowId, workflowName, attempts },\n    });\n  } else {\n    staticData.done[execId] = true;\n    out.push({\n      json: { action: 'giveup', executionId: execId, workflowId, workflowName, attempts },\n    });\n  }\n}\n\nreturn out;"
+      },
+      "id": "daa04dfa-0f77-421b-bf47-b524e698a7aa",
       "name": "Decide Actions",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        220,
-        -40
-      ],
-      "parameters": {
-        "jsCode": "// Reads recent error executions and decides per execution:\n//   'retry'  -> attempts left\n//   'giveup' -> exhausted, alert once\n// Attempt counts are tracked in workflow static data and chained across retries.\n\nconst cfg = $('Config').first().json;\nconst MAX_RETRIES = cfg.MAX_RETRIES ?? 3;\n\nconst body = $input.first().json;\nconst executions = Array.isArray(body.data) ? body.data : [];\n\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.attempts) staticData.attempts = {}; // execId -> number\nif (!staticData.done) staticData.done = {};         // execId -> true\n\nconst out = [];\n\nfor (const exec of executions) {\n  const execId = String(exec.id);\n\n  // Already fully handled (retried or given up) -> skip\n  if (staticData.done[execId]) continue;\n\n  const attempts = staticData.attempts[execId] ?? 0;\n  const workflowId = exec.workflowId ?? exec.workflowData?.id ?? '';\n  const workflowName = exec.workflowData?.name ?? 'Unknown workflow';\n\n  if (attempts < MAX_RETRIES) {\n    // Mark this execution as handled so we don't pick it again next run.\n    staticData.done[execId] = true;\n    out.push({\n      json: { action: 'retry', executionId: execId, workflowId, workflowName, attempts },\n    });\n  } else {\n    staticData.done[execId] = true;\n    out.push({\n      json: { action: 'giveup', executionId: execId, workflowId, workflowName, attempts },\n    });\n  }\n}\n\nreturn out;"
-      }
+        -560,
+        288
+      ]
     },
     {
-      "id": "node-if-retry",
-      "name": "Retry?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        520,
-        -40
-      ],
       "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
+            "leftValue": "",
             "typeValidation": "strict",
             "version": 2
           },
@@ -191,17 +184,17 @@
           "combinator": "and"
         },
         "options": {}
-      }
+      },
+      "id": "c5954114-a9be-4479-adac-95e5c21db9f6",
+      "name": "Retry?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -256,
+        288
+      ]
     },
     {
-      "id": "node-retry",
-      "name": "Retry Execution",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        800,
-        -160
-      ],
       "parameters": {
         "method": "POST",
         "url": "={{ $('Config').first().json.N8N_BASE_URL }}/api/v1/executions/{{ $json.executionId }}/retry",
@@ -211,30 +204,30 @@
         "specifyBody": "json",
         "jsonBody": "={\n  \"loadWorkflow\": false\n}",
         "options": {}
-      }
+      },
+      "id": "3e789a23-e37c-4ac3-b2c0-040ab3193ec4",
+      "name": "Retry Execution",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        64,
+        112
+      ]
     },
     {
-      "id": "node-record-retry",
+      "parameters": {
+        "jsCode": "// The retry created a new execution. Carry the attempt count forward so the\n// chain is bounded by MAX_RETRIES rather than restarting at 0 each time.\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.attempts) staticData.attempts = {};\n\nfor (const item of $input.all()) {\n  const prev = $('Decide Actions').itemMatching(item.pairedItem?.item ?? 0)?.json ?? {};\n  const newExec = item.json;\n  const newId = String(newExec.id ?? '');\n  const prevAttempts = prev.attempts ?? 0;\n  if (newId) {\n    staticData.attempts[newId] = prevAttempts + 1;\n  }\n}\n\nreturn $input.all();"
+      },
+      "id": "90526c65-b2ba-475c-9098-f6b148ff8359",
       "name": "Record New Attempt",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1060,
-        -160
-      ],
-      "parameters": {
-        "jsCode": "// The retry created a new execution. Carry the attempt count forward so the\n// chain is bounded by MAX_RETRIES rather than restarting at 0 each time.\nconst staticData = $getWorkflowStaticData('global');\nif (!staticData.attempts) staticData.attempts = {};\n\nfor (const item of $input.all()) {\n  const prev = $('Decide Actions').itemMatching(item.pairedItem?.item ?? 0)?.json ?? {};\n  const newExec = item.json;\n  const newId = String(newExec.id ?? '');\n  const prevAttempts = prev.attempts ?? 0;\n  if (newId) {\n    staticData.attempts[newId] = prevAttempts + 1;\n  }\n}\n\nreturn $input.all();"
-      }
+        320,
+        112
+      ]
     },
     {
-      "id": "node-alert-slack",
-      "name": "Alert: Slack",
-      "type": "n8n-nodes-base.slack",
-      "typeVersion": 2.2,
-      "position": [
-        800,
-        283.0
-      ],
       "parameters": {
         "select": "channel",
         "channelId": {
@@ -244,34 +237,35 @@
         },
         "text": "=⚠️ *Self-healing gave up*\n*Workflow:* {{ $json.workflowName }}\nStill failing after {{ $json.attempts }} automatic retries.\nLast failed execution: {{ $json.executionId }}",
         "otherOptions": {}
-      }
+      },
+      "id": "405aa2f9-1617-47bc-8590-cbbc0d52b203",
+      "name": "Alert: Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        176,
+        560
+      ],
+      "webhookId": "0db9f6c6-99d6-4268-820f-3aa554ca0702"
     },
     {
-      "id": "node-alert-telegram",
-      "name": "Alert: Telegram",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        800,
-        483.0
-      ],
-      "disabled": true,
       "parameters": {
         "chatId": "YOUR_CHAT_ID",
         "text": "=⚠️ Self-healing gave up\nWorkflow: {{ $json.workflowName }}\nStill failing after {{ $json.attempts }} retries.\nLast execution: {{ $json.executionId }}",
         "additionalFields": {}
-      }
+      },
+      "id": "7eaa53a5-c2be-4f1a-88ac-ee8fd47460a7",
+      "name": "Alert: Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        176,
+        768
+      ],
+      "webhookId": "b9a72742-a3b1-4938-b52e-4141450c06a6",
+      "disabled": true
     },
     {
-      "id": "node-alert-email",
-      "name": "Alert: Email",
-      "type": "n8n-nodes-base.emailSend",
-      "typeVersion": 2.1,
-      "position": [
-        800,
-        683.0
-      ],
-      "disabled": true,
       "parameters": {
         "fromEmail": "alerts@example.com",
         "toEmail": "you@example.com",
@@ -279,18 +273,19 @@
         "emailFormat": "text",
         "text": "=Self-healing gave up.\n\nWorkflow: {{ $json.workflowName }}\nStill failing after {{ $json.attempts }} retries.\nLast execution: {{ $json.executionId }}",
         "options": {}
-      }
+      },
+      "id": "e90d1088-3f78-4e2f-bf69-06a522b296bb",
+      "name": "Alert: Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        176,
+        960
+      ],
+      "webhookId": "95057409-8d5e-4374-b869-b1ff65683f88",
+      "disabled": true
     },
     {
-      "id": "node-alert-workflowbuddy",
-      "name": "Alert: WorkflowBuddy (iOS Push)",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        800,
-        883.0
-      ],
-      "disabled": true,
       "parameters": {
         "method": "POST",
         "url": "https://companion.amelus.de/api/notify",
@@ -314,9 +309,19 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "e6246af2-500e-4bfe-96f9-6c00f8a1dec3",
+      "name": "Alert: WorkflowBuddy (iOS Push)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        176,
+        1168
+      ],
+      "disabled": true
     }
   ],
+  "pinData": {},
   "connections": {
     "Every 15 Minutes": {
       "main": [
@@ -408,9 +413,10 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
   },
-  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": false
   }
