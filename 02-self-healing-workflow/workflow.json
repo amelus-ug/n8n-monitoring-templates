@@ -59,7 +59,7 @@
       "typeVersion": 1,
       "position": [
         775,
-        -68.0
+        25.0
       ],
       "id": "sticky-section-3-02",
       "name": "Sticky Note – 📣 \"Gave up\" alert — pick your channel"
@@ -233,7 +233,7 @@
       "typeVersion": 2.2,
       "position": [
         800,
-        120
+        213.0
       ],
       "parameters": {
         "select": "channel",
@@ -253,7 +253,7 @@
       "typeVersion": 1.2,
       "position": [
         800,
-        320
+        413.0
       ],
       "disabled": true,
       "parameters": {
@@ -269,7 +269,7 @@
       "typeVersion": 2.1,
       "position": [
         800,
-        520
+        613.0
       ],
       "disabled": true,
       "parameters": {
@@ -288,7 +288,7 @@
       "typeVersion": 4.2,
       "position": [
         800,
-        720
+        813.0
       ],
       "disabled": true,
       "parameters": {

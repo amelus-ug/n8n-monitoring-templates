@@ -27,7 +27,7 @@
       "typeVersion": 1,
       "position": [
         -585,
-        -248.0
+        -155.0
       ],
       "id": "sticky-section-1-05",
       "name": "Sticky Note – ⏱️ Start, run, measure"
@@ -71,7 +71,7 @@
       "typeVersion": 1,
       "position": [
         -560,
-        -80
+        13.0
       ],
       "parameters": {}
     },
@@ -82,7 +82,7 @@
       "typeVersion": 2,
       "position": [
         -340,
-        -80
+        13.0
       ],
       "parameters": {
         "jsCode": "// Capture the job name and start time. Edit JOB_NAME to suit.\nconst JOB_NAME = 'Nightly Export';\n\nreturn [\n  {\n    json: {\n      jobName: JOB_NAME,\n      startMs: Date.now(),\n      startedAt: new Date().toISOString(),\n    },\n  },\n];"
@@ -95,7 +95,7 @@
       "typeVersion": 1.1,
       "position": [
         -100,
-        -80
+        13.0
       ],
       "parameters": {
         "amount": 5,
@@ -109,7 +109,7 @@
       "typeVersion": 2,
       "position": [
         180,
-        -80
+        13.0
       ],
       "parameters": {
         "jsCode": "// Compute how long the job took.\nconst start = $('Mark Start').first().json;\nconst elapsedMs = Date.now() - start.startMs;\nconst mins = Math.floor(elapsedMs / 60000);\nconst secs = Math.round((elapsedMs % 60000) / 1000);\nconst durationText = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;\n\nreturn [\n  {\n    json: {\n      jobName: start.jobName,\n      durationText,\n      elapsedMs,\n      finishedAt: new Date().toISOString(),\n    },\n  },\n];"
