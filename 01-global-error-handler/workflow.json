@@ -12,7 +12,7 @@
       ],
       "parameters": {
         "width": 460,
-        "height": 965,
+        "height": 1045,
         "content": "## 🚨 Global Error Handler\n\nOne central workflow that catches failures from **all** your other workflows, logs every error, and escalates only the critical ones.\n\n### How it works\n1. An **Error Trigger** receives failures from any workflow that points here.\n2. **Classify Severity** marks the failure `critical` or `warning`, based on the workflow name.\n3. Every error is appended to a Google Sheet as an audit trail.\n4. Critical errors additionally fire an instant alert on the channel you enable.\n\n### Setup\n1. Activate this workflow.\n2. In every workflow you want to monitor, open **Settings → Error Workflow** and select this one.\n3. Create a Google Sheet with the header row from the *Error log* note, then set your credentials on **Log to Error Sheet**.\n4. Enable one alert channel: Slack (default), Telegram, Email or WorkflowBuddy.\n\nUsing **WorkflowBuddy** for the alerts? Install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, and add it in n8n as a Header Auth credential: `Authorization` / `Bearer wb_…`.\n\n### Customization tips\nEdit `CRITICAL_TAG` and `CRITICAL_KEYWORDS` in **Classify Severity** to decide what escalates. Prefer a database? Swap the Sheet for Postgres, Airtable or Notion — the field names stay the same.\n\nAn error workflow cannot catch its own failures, so keep this one simple and test it once with a deliberately failing workflow."
       }
     },

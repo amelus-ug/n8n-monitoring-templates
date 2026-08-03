@@ -12,7 +12,7 @@
       ],
       "parameters": {
         "width": 460,
-        "height": 853,
+        "height": 933,
         "content": "## ❤️ Health Check / Heartbeat Monitor\n\nCatches the failure mode that error alerts miss: a workflow that **silently stops running** — disabled by accident, broken trigger, dead cron. No error is ever thrown, it just goes quiet.\n\n### How it works\n1. Runs on a schedule (default every hour).\n2. For each workflow you list, asks the n8n API for its most recent **successful** execution.\n3. If that success is older than the workflow's threshold — or there is none at all — the workflow is flagged as stale and you get one alert per stale workflow.\n\n### Setup\n1. In **Monitored Workflows**, set `N8N_BASE_URL` and list the workflows to watch (id + max age).\n2. Create an n8n API key (**Settings → n8n API**) and add it as a *Header Auth* credential — Name `X-N8N-API-KEY` — on the HTTP Request node.\n3. Enable one alert channel: Slack (default), Telegram, Email or WorkflowBuddy.\n4. **Activate** the workflow.\n\nUsing **WorkflowBuddy** for the alerts? Install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, and add it in n8n as a Header Auth credential: `Authorization` / `Bearer wb_…`.\n\n### Customization tips\nRun this on a *second* n8n instance, or pair it with an external uptime monitor, so it can still reach you when the monitored instance itself is down."
       }
     },
