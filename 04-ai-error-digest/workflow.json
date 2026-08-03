@@ -12,7 +12,7 @@
       ],
       "parameters": {
         "width": 460,
-        "height": 620,
+        "height": 743,
         "content": "## 🤖 AI Error Digest\n\nInstead of a push for every single failure, get **one** calm summary a day: what failed, how often, and what to look at first — written by an LLM.\n\n### How it works\n1. Runs once a day (default 08:00).\n2. Pulls the last 24 h of `error` executions from the n8n API.\n3. Aggregates them by workflow.\n4. An LLM turns the raw counts into a prioritized, plain-language digest.\n5. Delivers it as a single message on the channel you enable.\n\n### Setup\n1. Set `N8N_BASE_URL` and `LOOKBACK_HOURS` in the **Config** node.\n2. Create an n8n API key (**Settings → n8n API**) and add it as a *Header Auth* credential — Name `X-N8N-API-KEY` — on the HTTP Request node.\n3. Add your LLM credential to the **Chat Model** node.\n4. Enable one delivery channel: Slack (default), Telegram, Email or WorkflowBuddy.\n5. **Activate** the workflow.\n\nUsing **WorkflowBuddy** for the alerts? Install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, and add it in n8n as a Header Auth credential: `Authorization` / `Bearer wb_…`.\n\n### Customization tips\nSwap **Chat Model** for any chat model node — Anthropic, Gemini, Ollama, Groq — the prompt stays the same. If there were no failures in the window, a short \"all clear\" branch runs instead (disabled by default)."
       }
     },
