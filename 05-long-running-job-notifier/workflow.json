@@ -12,7 +12,7 @@
       ],
       "parameters": {
         "width": 460,
-        "height": 753,
+        "height": 891,
         "content": "## ⏱️ Long-Running Job Notifier\n\nWrap any slow workflow — big export, batch import, video render, nightly ETL — so you get a notification when it **starts** and another when it **finishes**, with the total duration. No more babysitting a tab.\n\n### How it works\n1. **Mark Start** stamps the start time and fires the \"started\" notification.\n2. Your actual job runs.\n3. **Mark Done** computes the duration and fires the \"finished\" notification.\n\nBoth notifications sit on side branches, so the job itself runs whether or not a channel is enabled.\n\n### Setup\n1. Replace the **▶ Your Long Job Here** node with your actual work.\n2. Set the job name in the **Mark Start** node.\n3. Enable one notification channel: Slack (default), Telegram, Email or WorkflowBuddy.\n4. Swap the Manual Trigger for your real trigger, then activate.\n\nUsing **WorkflowBuddy** for the alerts? Install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, and add it in n8n as a Header Auth credential: `Authorization` / `Bearer wb_…`.\n\n### Customization tips\nThe **Wait** node simulates a slow job so your first test run shows a real duration — delete it once your own steps are in place."
       }
     },
