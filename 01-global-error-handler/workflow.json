@@ -2,85 +2,77 @@
   "name": "Global Error Handler with Severity-Based Escalation",
   "nodes": [
     {
-      "id": "sticky-overview",
+      "parameters": {
+        "content": "## 🚨 Global Error Handler\n\nOne central workflow that catches failures from **all** your other workflows, logs every error, and escalates only the critical ones.\n\n### How it works\n1. An **Error Trigger** receives failures from any workflow that points here.\n2. **Classify Severity** marks the failure `critical` or `warning`, based on the workflow name.\n3. Every error is appended to a Google Sheet as an audit trail.\n4. Critical errors additionally fire an instant alert on the channel you enable.\n\n### Setup\n1. Activate this workflow.\n2. In every workflow you want to monitor, open **Settings → Error Workflow** and select this one.\n3. Create a Google Sheet with the header row from the *Error log* note, then set your credentials on **Log to Error Sheet**.\n4. Enable one alert channel: Slack (default), Telegram, Email or WorkflowBuddy.\n\nUsing **WorkflowBuddy** for the alerts? Install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, and add it in n8n as a Header Auth credential: `Authorization` / `Bearer wb_…`.\n\n### Customization tips\nEdit `CRITICAL_TAG` and `CRITICAL_KEYWORDS` in **Classify Severity** to decide what escalates. Prefer a database? Swap the Sheet for Postgres, Airtable or Notion — the field names stay the same.\n\nAn error workflow cannot catch its own failures, so keep this one simple and test it once with a deliberately failing workflow.",
+        "height": 1045,
+        "width": 460
+      },
+      "id": "8189ec86-8928-4b0d-8182-739963ff5b52",
       "name": "Sticky Note – Overview",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -760,
-        0
-      ],
-      "parameters": {
-        "width": 460,
-        "height": 1045,
-        "content": "## 🚨 Global Error Handler\n\nOne central workflow that catches failures from **all** your other workflows, logs every error, and escalates only the critical ones.\n\n### How it works\n1. An **Error Trigger** receives failures from any workflow that points here.\n2. **Classify Severity** marks the failure `critical` or `warning`, based on the workflow name.\n3. Every error is appended to a Google Sheet as an audit trail.\n4. Critical errors additionally fire an instant alert on the channel you enable.\n\n### Setup\n1. Activate this workflow.\n2. In every workflow you want to monitor, open **Settings → Error Workflow** and select this one.\n3. Create a Google Sheet with the header row from the *Error log* note, then set your credentials on **Log to Error Sheet**.\n4. Enable one alert channel: Slack (default), Telegram, Email or WorkflowBuddy.\n\nUsing **WorkflowBuddy** for the alerts? Install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, and add it in n8n as a Header Auth credential: `Authorization` / `Bearer wb_…`.\n\n### Customization tips\nEdit `CRITICAL_TAG` and `CRITICAL_KEYWORDS` in **Classify Severity** to decide what escalates. Prefer a database? Swap the Sheet for Postgres, Airtable or Notion — the field names stay the same.\n\nAn error workflow cannot catch its own failures, so keep this one simple and test it once with a deliberately failing workflow."
-      }
+        -1616,
+        112
+      ]
     },
     {
       "parameters": {
         "content": "## ⚙️ Catch, classify, log\n\nEvery failure lands here, gets marked `critical` or `warning` from the workflow name, and is appended to the sheet before anything is escalated.",
-        "height": 313,
-        "width": 1050,
+        "height": 345,
+        "width": 1066,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -245,
-        132.0
+        -1120,
+        240
       ],
-      "id": "sticky-section-1-01",
+      "id": "aeb0aea2-2159-4389-83d2-d1d88f672e73",
       "name": "Sticky Note – ⚙️ Catch, classify, log"
     },
     {
       "parameters": {
         "content": "## 📣 Critical alerts — pick your channel\n\nSlack is enabled by default; enable another node and disable Slack. **WorkflowBuddy** sends them as native iOS push — setup in the overview.",
-        "height": 1133,
-        "width": 460,
+        "height": 1181,
+        "width": 492,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        855,
-        -108.0
+        16,
+        128
       ],
-      "id": "sticky-section-2-01",
+      "id": "67515aea-74e3-4ba9-8ca6-3ac3077ab279",
       "name": "Sticky Note – 📣 Critical alerts — pick your channel"
     },
     {
-      "id": "node-error-trigger",
+      "parameters": {},
+      "id": "54cc8dd4-4241-4986-a6d8-135cdd369567",
       "name": "Catch Workflow Errors",
       "type": "n8n-nodes-base.errorTrigger",
       "typeVersion": 1,
       "position": [
-        -220,
-        300
-      ],
-      "parameters": {}
+        -1072,
+        416
+      ]
     },
     {
-      "id": "node-classify",
+      "parameters": {
+        "jsCode": "// ── Configuration ──────────────────────────────────────────────\nconst CRITICAL_TAG = '[critical]'; // mark workflows by name, e.g. \"Invoice Sync [critical]\"\nconst CRITICAL_KEYWORDS = ['payment', 'billing', 'invoice']; // name keywords that are always critical\n// ───────────────────────────────────────────────────────────────\n\nconst data = $json;\n\nconst workflowName = data.workflow?.name ?? 'Unknown workflow';\nconst workflowId = data.workflow?.id ?? '';\nconst executionId = data.execution?.id ?? '';\nconst executionUrl = data.execution?.url ?? '';\nconst nodeName = data.execution?.lastNodeExecuted ?? 'Unknown node';\nconst errorMessage =\n  data.execution?.error?.message ??\n  data.trigger?.error?.message ??\n  'Unknown error';\n\nconst nameLower = workflowName.toLowerCase();\nconst isCritical =\n  nameLower.includes(CRITICAL_TAG.toLowerCase()) ||\n  CRITICAL_KEYWORDS.some((kw) => nameLower.includes(kw.toLowerCase()));\n\nreturn [\n  {\n    json: {\n      timestamp: new Date().toISOString(),\n      severity: isCritical ? 'critical' : 'warning',\n      workflowName,\n      workflowId,\n      executionId,\n      executionUrl,\n      nodeName,\n      errorMessage,\n      isCritical,\n    },\n  },\n];"
+      },
+      "id": "28cf5c65-3cc1-472f-bcc6-81a1004e2b29",
       "name": "Classify Severity",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        40,
-        300
-      ],
-      "parameters": {
-        "jsCode": "// ── Configuration ──────────────────────────────────────────────\nconst CRITICAL_TAG = '[critical]'; // mark workflows by name, e.g. \"Invoice Sync [critical]\"\nconst CRITICAL_KEYWORDS = ['payment', 'billing', 'invoice']; // name keywords that are always critical\n// ───────────────────────────────────────────────────────────────\n\nconst data = $json;\n\nconst workflowName = data.workflow?.name ?? 'Unknown workflow';\nconst workflowId = data.workflow?.id ?? '';\nconst executionId = data.execution?.id ?? '';\nconst executionUrl = data.execution?.url ?? '';\nconst nodeName = data.execution?.lastNodeExecuted ?? 'Unknown node';\nconst errorMessage =\n  data.execution?.error?.message ??\n  data.trigger?.error?.message ??\n  'Unknown error';\n\nconst nameLower = workflowName.toLowerCase();\nconst isCritical =\n  nameLower.includes(CRITICAL_TAG.toLowerCase()) ||\n  CRITICAL_KEYWORDS.some((kw) => nameLower.includes(kw.toLowerCase()));\n\nreturn [\n  {\n    json: {\n      timestamp: new Date().toISOString(),\n      severity: isCritical ? 'critical' : 'warning',\n      workflowName,\n      workflowId,\n      executionId,\n      executionUrl,\n      nodeName,\n      errorMessage,\n      isCritical,\n    },\n  },\n];"
-      }
+        -816,
+        416
+      ]
     },
     {
-      "id": "node-log-sheet",
-      "name": "Log to Error Sheet",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        320,
-        300
-      ],
       "parameters": {
         "operation": "append",
         "documentId": {
@@ -92,25 +84,18 @@
           "__rl": true,
           "mode": "list",
           "value": ""
-        },
-        "columns": {
-          "mappingMode": "autoMapInputData",
-          "value": {},
-          "matchingColumns": [],
-          "schema": []
-        },
-        "options": {}
-      }
+        }
+      },
+      "id": "f7080936-898e-4d38-b293-ac09e0c32cd5",
+      "name": "Log to Error Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -528,
+        416
+      ]
     },
     {
-      "id": "node-if-critical",
-      "name": "Critical?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        580,
-        300
-      ],
       "parameters": {
         "conditions": {
           "options": {
@@ -134,17 +119,17 @@
           "combinator": "and"
         },
         "options": {}
-      }
-    },
-    {
-      "id": "node-alert-slack",
-      "name": "Alert: Slack",
-      "type": "n8n-nodes-base.slack",
+      },
+      "id": "2becefeb-1500-43a3-bd20-9048f56c009c",
+      "name": "Critical?",
+      "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        880,
-        80
-      ],
+        -272,
+        416
+      ]
+    },
+    {
       "parameters": {
         "select": "channel",
         "channelId": {
@@ -154,34 +139,35 @@
         },
         "text": "=🚨 *Critical workflow failure*\n*Workflow:* {{ $json.workflowName }}\n*Failed node:* {{ $json.nodeName }}\n*Error:* {{ $json.errorMessage }}\n*Execution:* {{ $json.executionUrl }}",
         "otherOptions": {}
-      }
+      },
+      "id": "e31488b2-ecd6-4cb8-968c-a0b67e15d481",
+      "name": "Alert: Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        80,
+        320
+      ],
+      "webhookId": "43d3b38a-4f10-41c0-83cd-23d53e75b85d"
     },
     {
-      "id": "node-alert-telegram",
-      "name": "Alert: Telegram",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        880,
-        280
-      ],
-      "disabled": true,
       "parameters": {
         "chatId": "YOUR_CHAT_ID",
         "text": "=🚨 Critical workflow failure\nWorkflow: {{ $json.workflowName }}\nFailed node: {{ $json.nodeName }}\nError: {{ $json.errorMessage }}\nExecution: {{ $json.executionUrl }}",
         "additionalFields": {}
-      }
+      },
+      "id": "7ea467cb-6e19-4eaf-9343-a1592e1d8b55",
+      "name": "Alert: Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        528
+      ],
+      "webhookId": "f75bd792-1492-47e6-a82c-f20e4b0a6fb4",
+      "disabled": true
     },
     {
-      "id": "node-alert-email",
-      "name": "Alert: Email",
-      "type": "n8n-nodes-base.emailSend",
-      "typeVersion": 2.1,
-      "position": [
-        880,
-        480
-      ],
-      "disabled": true,
       "parameters": {
         "fromEmail": "alerts@example.com",
         "toEmail": "you@example.com",
@@ -189,18 +175,19 @@
         "emailFormat": "text",
         "text": "=Critical workflow failure\n\nWorkflow: {{ $json.workflowName }}\nFailed node: {{ $json.nodeName }}\nError: {{ $json.errorMessage }}\nExecution: {{ $json.executionUrl }}\nTime: {{ $json.timestamp }}",
         "options": {}
-      }
+      },
+      "id": "a1bf3513-b6e4-47cd-ad16-4fd1c375c138",
+      "name": "Alert: Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        720
+      ],
+      "webhookId": "9193c3c6-c6fa-4efd-a5c3-d8b388c6143c",
+      "disabled": true
     },
     {
-      "id": "node-alert-workflowbuddy",
-      "name": "Alert: WorkflowBuddy (iOS Push)",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        880,
-        680
-      ],
-      "disabled": true,
       "parameters": {
         "method": "POST",
         "url": "https://companion.amelus.de/api/notify",
@@ -224,20 +211,30 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "23b4f67a-f443-4225-904d-c669e17c306f",
+      "name": "Alert: WorkflowBuddy (iOS Push)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        80,
+        928
+      ],
+      "disabled": true
     },
     {
-      "id": "node-logged-only",
+      "parameters": {},
+      "id": "8457be08-c96e-4934-9766-54146472a59e",
       "name": "Logged Only (No Alert)",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        880,
-        880
-      ],
-      "parameters": {}
+        80,
+        1168
+      ]
     }
   ],
+  "pinData": {},
   "connections": {
     "Catch Workflow Errors": {
       "main": [
@@ -307,9 +304,9 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
-  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": false
   }

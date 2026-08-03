@@ -2,128 +2,118 @@
   "name": "Long-Running Job Notifier – Start & Completion Push",
   "nodes": [
     {
-      "id": "sticky-overview",
+      "parameters": {
+        "content": "## ⏱️ Long-Running Job Notifier\n\nWrap any slow workflow — big export, batch import, video render, nightly ETL — so you get a notification when it **starts** and another when it **finishes**, with the total duration. No more babysitting a tab.\n\n### How it works\n1. **Mark Start** stamps the start time and fires the \"started\" notification.\n2. Your actual job runs.\n3. **Mark Done** computes the duration and fires the \"finished\" notification.\n\nBoth notifications sit on side branches, so the job itself runs whether or not a channel is enabled.\n\n### Setup\n1. Replace the **▶ Your Long Job Here** node with your actual work.\n2. Set the job name in the **Mark Start** node.\n3. Enable one notification channel: Slack (default), Telegram, Email or WorkflowBuddy.\n4. Swap the Manual Trigger for your real trigger, then activate.\n\nUsing **WorkflowBuddy** for the alerts? Install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, and add it in n8n as a Header Auth credential: `Authorization` / `Bearer wb_…`.\n\n### Customization tips\nThe **Wait** node simulates a slow job so your first test run shows a real duration — delete it once your own steps are in place.",
+        "height": 971,
+        "width": 460
+      },
+      "id": "c2ac1f83-377c-4f33-90a0-999ebb69b986",
       "name": "Sticky Note – Overview",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1080,
-        -540
-      ],
-      "parameters": {
-        "width": 460,
-        "height": 971,
-        "content": "## ⏱️ Long-Running Job Notifier\n\nWrap any slow workflow — big export, batch import, video render, nightly ETL — so you get a notification when it **starts** and another when it **finishes**, with the total duration. No more babysitting a tab.\n\n### How it works\n1. **Mark Start** stamps the start time and fires the \"started\" notification.\n2. Your actual job runs.\n3. **Mark Done** computes the duration and fires the \"finished\" notification.\n\nBoth notifications sit on side branches, so the job itself runs whether or not a channel is enabled.\n\n### Setup\n1. Replace the **▶ Your Long Job Here** node with your actual work.\n2. Set the job name in the **Mark Start** node.\n3. Enable one notification channel: Slack (default), Telegram, Email or WorkflowBuddy.\n4. Swap the Manual Trigger for your real trigger, then activate.\n\nUsing **WorkflowBuddy** for the alerts? Install the [app](https://apps.apple.com/app/id6760253861), copy your key from **Settings → Push API**, and add it in n8n as a Header Auth credential: `Authorization` / `Bearer wb_…`.\n\n### Customization tips\nThe **Wait** node simulates a slow job so your first test run shows a real duration — delete it once your own steps are in place."
-      }
+        -960,
+        16
+      ]
     },
     {
       "parameters": {
         "content": "## ⏱️ Start, run, measure\n\n**Mark Start** stamps the time, your job runs in place of the Wait node, **Mark Done** computes the duration.",
         "height": 313,
-        "width": 990,
+        "width": 942,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -585,
-        -155.0
+        -480,
+        576
       ],
-      "id": "sticky-section-1-05",
+      "id": "5c7179c9-420c-4714-92df-380fbc1ea7cc",
       "name": "Sticky Note – ⏱️ Start, run, measure"
     },
     {
       "parameters": {
         "content": "## 🚀 \"Started\" notification\n\nFires the moment the job begins. Copy a node from the *Finished* group for Telegram or Email.",
-        "height": 533,
-        "width": 460,
+        "height": 565,
+        "width": 524,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -125,
-        -728.0
+        -64,
+        0
       ],
-      "id": "sticky-section-2-05",
+      "id": "4e525631-47df-4d6b-9cfa-cb21e06e56eb",
       "name": "Sticky Note – 🚀 \"Started\" notification"
     },
     {
       "parameters": {
         "content": "## ✅ \"Finished\" notification — pick your channel\n\nCarries the total duration. Slack is enabled by default; enable another node and disable Slack. **WorkflowBuddy** sends them as native iOS push — setup in the overview.",
-        "height": 833,
-        "width": 460,
+        "height": 1073,
+        "width": 524,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        595,
-        -388.0
+        576,
+        16
       ],
-      "id": "sticky-section-3-05",
+      "id": "f7b218a8-72fe-4e27-91bd-4b3e5696f526",
       "name": "Sticky Note – ✅ \"Finished\" notification — pick your ch"
     },
     {
-      "id": "node-trigger",
+      "parameters": {},
+      "id": "33b269dc-f11e-4470-9a9a-9be65c25ffed",
       "name": "When clicking ‘Test’",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -560,
-        13.0
-      ],
-      "parameters": {}
+        -432,
+        752
+      ]
     },
     {
-      "id": "node-mark-start",
+      "parameters": {
+        "jsCode": "// Capture the job name and start time. Edit JOB_NAME to suit.\nconst JOB_NAME = 'Nightly Export';\n\nreturn [\n  {\n    json: {\n      jobName: JOB_NAME,\n      startMs: Date.now(),\n      startedAt: new Date().toISOString(),\n    },\n  },\n];"
+      },
+      "id": "dff705c3-5b51-498e-86ae-b388c239eb95",
       "name": "Mark Start",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -340,
-        13.0
-      ],
-      "parameters": {
-        "jsCode": "// Capture the job name and start time. Edit JOB_NAME to suit.\nconst JOB_NAME = 'Nightly Export';\n\nreturn [\n  {\n    json: {\n      jobName: JOB_NAME,\n      startMs: Date.now(),\n      startedAt: new Date().toISOString(),\n    },\n  },\n];"
-      }
+        -208,
+        752
+      ]
     },
     {
-      "id": "node-long-job",
+      "parameters": {},
+      "id": "38dd8f4a-aa50-432a-a838-1ef2c0e770b7",
       "name": "▶ Your Long Job Here",
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        -100,
-        13.0
+        32,
+        752
       ],
-      "parameters": {
-        "amount": 5,
-        "unit": "seconds"
-      }
+      "webhookId": "927f7242-fdc2-4b5c-9b5c-4ee73be3df69"
     },
     {
-      "id": "node-mark-done",
+      "parameters": {
+        "jsCode": "// Compute how long the job took.\nconst start = $('Mark Start').first().json;\nconst elapsedMs = Date.now() - start.startMs;\nconst mins = Math.floor(elapsedMs / 60000);\nconst secs = Math.round((elapsedMs % 60000) / 1000);\nconst durationText = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;\n\nreturn [\n  {\n    json: {\n      jobName: start.jobName,\n      durationText,\n      elapsedMs,\n      finishedAt: new Date().toISOString(),\n    },\n  },\n];"
+      },
+      "id": "81fca617-75cc-418c-9d69-8c6046edd3c6",
       "name": "Mark Done",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        180,
-        13.0
-      ],
-      "parameters": {
-        "jsCode": "// Compute how long the job took.\nconst start = $('Mark Start').first().json;\nconst elapsedMs = Date.now() - start.startMs;\nconst mins = Math.floor(elapsedMs / 60000);\nconst secs = Math.round((elapsedMs % 60000) / 1000);\nconst durationText = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;\n\nreturn [\n  {\n    json: {\n      jobName: start.jobName,\n      durationText,\n      elapsedMs,\n      finishedAt: new Date().toISOString(),\n    },\n  },\n];"
-      }
+        320,
+        752
+      ]
     },
     {
-      "id": "node-start-slack",
-      "name": "Start: Slack",
-      "type": "n8n-nodes-base.slack",
-      "typeVersion": 2.2,
-      "position": [
-        -100,
-        -340
-      ],
       "parameters": {
         "select": "channel",
         "channelId": {
@@ -133,18 +123,18 @@
         },
         "text": "=🚀 Started: {{ $('Mark Start').first().json.jobName }}",
         "otherOptions": {}
-      }
+      },
+      "id": "a9b2154d-197a-4c24-a3ac-1b5a0ce1416d",
+      "name": "Start: Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        32,
+        400
+      ],
+      "webhookId": "280f8009-93c8-43ee-b7f9-7663138460f5"
     },
     {
-      "id": "node-start-workflowbuddy",
-      "name": "Start: WorkflowBuddy (iOS Push)",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -100,
-        -540
-      ],
-      "disabled": true,
       "parameters": {
         "method": "POST",
         "url": "https://companion.amelus.de/api/notify",
@@ -168,17 +158,18 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "694314fb-2e79-409e-988c-6713c5cc8938",
+      "name": "Start: WorkflowBuddy (iOS Push)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        32,
+        192
+      ],
+      "disabled": true
     },
     {
-      "id": "node-done-slack",
-      "name": "Done: Slack",
-      "type": "n8n-nodes-base.slack",
-      "typeVersion": 2.2,
-      "position": [
-        620,
-        -180
-      ],
       "parameters": {
         "select": "channel",
         "channelId": {
@@ -188,34 +179,35 @@
         },
         "text": "=✅ Finished: {{ $json.jobName }} in {{ $json.durationText }}",
         "otherOptions": {}
-      }
+      },
+      "id": "ecea84a9-11be-40b4-9193-367f1571d348",
+      "name": "Done: Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        224
+      ],
+      "webhookId": "b022e030-a184-47bd-a989-ea3666934e3b"
     },
     {
-      "id": "node-done-telegram",
-      "name": "Done: Telegram",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        620,
-        20
-      ],
-      "disabled": true,
       "parameters": {
         "chatId": "YOUR_CHAT_ID",
         "text": "=✅ Finished: {{ $json.jobName }} in {{ $json.durationText }}",
         "additionalFields": {}
-      }
+      },
+      "id": "7c0f55a8-332b-4b9c-9508-fb356bf5e3e1",
+      "name": "Done: Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        672,
+        416
+      ],
+      "webhookId": "49487eda-7d09-4709-b5bb-73071b913ced",
+      "disabled": true
     },
     {
-      "id": "node-done-email",
-      "name": "Done: Email",
-      "type": "n8n-nodes-base.emailSend",
-      "typeVersion": 2.1,
-      "position": [
-        620,
-        160
-      ],
-      "disabled": true,
       "parameters": {
         "fromEmail": "alerts@example.com",
         "toEmail": "you@example.com",
@@ -223,18 +215,19 @@
         "emailFormat": "text",
         "text": "={{ $json.jobName }} finished in {{ $json.durationText }}.",
         "options": {}
-      }
+      },
+      "id": "f8377e88-a4de-44f6-b3a3-feb2b7e46e97",
+      "name": "Done: Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        672,
+        624
+      ],
+      "webhookId": "8db789d6-9910-4f05-97e7-44b0ace019cc",
+      "disabled": true
     },
     {
-      "id": "node-done-workflowbuddy",
-      "name": "Done: WorkflowBuddy (iOS Push)",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        620,
-        300
-      ],
-      "disabled": true,
       "parameters": {
         "method": "POST",
         "url": "https://companion.amelus.de/api/notify",
@@ -258,9 +251,19 @@
           ]
         },
         "options": {}
-      }
+      },
+      "id": "be2d2a28-cda4-41ac-99ee-702148d572a1",
+      "name": "Done: WorkflowBuddy (iOS Push)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        672,
+        816
+      ],
+      "disabled": true
     }
   ],
+  "pinData": {},
   "connections": {
     "When clicking ‘Test’": {
       "main": [
@@ -333,9 +336,9 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "binaryMode": "separate"
   },
-  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": false
   }
