@@ -19,7 +19,7 @@
     {
       "parameters": {
         "content": "## ⚙️ Catch, classify, log\n\nEvery failure lands here, gets marked `critical` or `warning` from the workflow name, and is appended to the sheet before anything is escalated.",
-        "height": 313,
+        "height": 383,
         "width": 1050,
         "color": 7
       },
@@ -35,7 +35,7 @@
     {
       "parameters": {
         "content": "## 📣 Critical alerts — pick your channel\n\nSlack is enabled by default; enable another node and disable Slack. **WorkflowBuddy** sends them as native iOS push — setup in the overview.",
-        "height": 1133,
+        "height": 1203,
         "width": 460,
         "color": 7
       },

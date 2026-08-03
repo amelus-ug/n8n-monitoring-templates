@@ -19,7 +19,7 @@
     {
       "parameters": {
         "content": "## ⚙️ Collect and aggregate\n\nOnce a day, pull the last 24 h of failed executions and group them by workflow.",
-        "height": 313,
+        "height": 383,
         "width": 950,
         "color": 7
       },
@@ -35,7 +35,7 @@
     {
       "parameters": {
         "content": "## 🧠 Summarize with an LLM\n\n**Chat Model** is OpenAI by default — swap it for any chat model node, the prompt stays the same. No failures in the window takes the *All Clear* branch.",
-        "height": 813,
+        "height": 883,
         "width": 750,
         "color": 7
       },
@@ -51,7 +51,7 @@
     {
       "parameters": {
         "content": "## 📣 Daily digest — pick your channel\n\nOne message a day. Slack is enabled by default; enable another node and disable Slack. **WorkflowBuddy** sends them as native iOS push — setup in the overview.",
-        "height": 873,
+        "height": 943,
         "width": 460,
         "color": 7
       },

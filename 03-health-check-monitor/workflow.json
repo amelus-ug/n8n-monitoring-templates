@@ -19,7 +19,7 @@
     {
       "parameters": {
         "content": "## ⚙️ Check each workflow\n\nOn a schedule, ask the n8n API when each listed workflow last *succeeded* and compare it against that workflow's own threshold.",
-        "height": 313,
+        "height": 383,
         "width": 1010,
         "color": 7
       },
@@ -35,7 +35,7 @@
     {
       "parameters": {
         "content": "## 📣 Stale-workflow alert — pick your channel\n\nOne alert per stale workflow. Slack is enabled by default; enable another node and disable Slack. **WorkflowBuddy** sends them as native iOS push — setup in the overview.",
-        "height": 953,
+        "height": 1023,
         "width": 460,
         "color": 7
       },
