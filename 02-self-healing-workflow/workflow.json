@@ -19,7 +19,7 @@
     {
       "parameters": {
         "content": "## ⚙️ Scan and decide\n\nOn a schedule, list recent failed executions and work out per execution whether to retry, give up, or skip it.",
-        "height": 243,
+        "height": 313,
         "width": 1290,
         "color": 7
       },
@@ -27,7 +27,7 @@
       "typeVersion": 1,
       "position": [
         -545,
-        -138.0
+        -208.0
       ],
       "id": "sticky-section-1-02",
       "name": "Sticky Note – ⚙️ Scan and decide"
@@ -35,7 +35,7 @@
     {
       "parameters": {
         "content": "## 🔁 Retry path\n\nRe-runs the execution and records the new attempt, so the count carries forward.",
-        "height": 243,
+        "height": 313,
         "width": 510,
         "color": 7
       },
@@ -43,7 +43,7 @@
       "typeVersion": 1,
       "position": [
         775,
-        -258.0
+        -328.0
       ],
       "id": "sticky-section-2-02",
       "name": "Sticky Note – 🔁 Retry path"
@@ -51,7 +51,7 @@
     {
       "parameters": {
         "content": "## 📣 \"Gave up\" alert — pick your channel\n\nSlack is enabled by default; enable another node and disable Slack. **WorkflowBuddy** sends them as native iOS push — setup in the overview.",
-        "height": 863,
+        "height": 933,
         "width": 460,
         "color": 7
       },
@@ -59,7 +59,7 @@
       "typeVersion": 1,
       "position": [
         775,
-        2.0
+        -68.0
       ],
       "id": "sticky-section-3-02",
       "name": "Sticky Note – 📣 \"Gave up\" alert — pick your channel"

@@ -19,7 +19,7 @@
     {
       "parameters": {
         "content": "## ⏱️ Start, run, measure\n\n**Mark Start** stamps the time, your job runs in place of the Wait node, **Mark Done** computes the duration.",
-        "height": 243,
+        "height": 313,
         "width": 990,
         "color": 7
       },
@@ -27,7 +27,7 @@
       "typeVersion": 1,
       "position": [
         -585,
-        -178.0
+        -248.0
       ],
       "id": "sticky-section-1-05",
       "name": "Sticky Note – ⏱️ Start, run, measure"
@@ -35,7 +35,7 @@
     {
       "parameters": {
         "content": "## 🚀 \"Started\" notification\n\nFires the moment the job begins. Copy a node from the *Finished* group for Telegram or Email.",
-        "height": 463,
+        "height": 533,
         "width": 460,
         "color": 7
       },
@@ -43,7 +43,7 @@
       "typeVersion": 1,
       "position": [
         -125,
-        -658.0
+        -728.0
       ],
       "id": "sticky-section-2-05",
       "name": "Sticky Note – 🚀 \"Started\" notification"
@@ -51,7 +51,7 @@
     {
       "parameters": {
         "content": "## ✅ \"Finished\" notification — pick your channel\n\nCarries the total duration. Slack is enabled by default; enable another node and disable Slack. **WorkflowBuddy** sends them as native iOS push — setup in the overview.",
-        "height": 763,
+        "height": 833,
         "width": 460,
         "color": 7
       },
@@ -59,7 +59,7 @@
       "typeVersion": 1,
       "position": [
         595,
-        -318.0
+        -388.0
       ],
       "id": "sticky-section-3-05",
       "name": "Sticky Note – ✅ \"Finished\" notification — pick your ch"
